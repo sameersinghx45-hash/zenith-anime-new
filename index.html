@@ -3,176 +3,168 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zenith Anime</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#090b12;color:white;font-family:Arial,sans-serif}
-header{padding:22px 16px;background:#121522;position:sticky;top:0;z-index:5}
-.logo{font-size:27px;font-weight:900;color:#8b5cf6}
-.logo span{color:#fff}
-.search{width:100%;margin-top:16px;padding:13px;border:1px solid #33394d;border-radius:10px;background:#090b12;color:white;font-size:16px}
-.hero{padding:32px 18px;background:linear-gradient(135deg,#25104c,#101827);text-align:center}
-.hero h1{font-size:34px;margin:5px 0 12px}
-.hero p{color:#c4c6d4;line-height:1.6}
-button{border:0;border-radius:8px;padding:11px 15px;background:#8b5cf6;color:white;font-weight:bold;cursor:pointer}
-main{padding:18px}
-.section-title{font-size:22px;margin:10px 0 18px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.card{background:#151925;border-radius:12px;overflow:hidden;border:1px solid #252b3a}
-.card img{width:100%;height:230px;object-fit:cover;background:#202436}
-.info{padding:11px}
-.info h3{font-size:15px;margin:0 0 8px;line-height:1.4}
-.meta{font-size:12px;color:#b5b9ca;margin-bottom:10px}
-.card button{width:100%;padding:10px 5px}
-.status{text-align:center;padding:22px;color:#b5b9ca}
-footer{text-align:center;padding:24px;color:#999;font-size:12px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card img{height:290px}}
+body{margin:0;background:#090b12;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px;background:#121522;position:sticky;top:0;z-index:2}
+.logo{font-size:27px;font-weight:900;color:#a78bfa}
+.logo span{color:white}
+input{width:100%;padding:14px;margin-top:15px;border-radius:10px;border:1px solid #38394c;background:#090b12;color:white;font-size:16px}
+.hero{text-align:center;padding:35px 16px;background:linear-gradient(130deg,#38106b,#111827)}
+.hero h1{font-size:34px;margin:0 0 10px}
+.hero p{color:#ddd;line-height:1.5}
+main{padding:16px}
+h2{font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.card{background:#171b29;border-radius:12px;overflow:hidden}
+.card img{width:100%;height:235px;object-fit:cover}
+.info{padding:10px}
+.info h3{font-size:15px;min-height:35px}
+.meta{font-size:12px;color:#c1c5d4;margin-bottom:12px}
+button{width:100%;padding:11px;border:0;border-radius:8px;background:#8b5cf6;color:white;font-weight:bold;font-size:14px;cursor:pointer}
+.details{background:#24283a;margin-top:7px}
+#status{text-align:center;padding:22px;color:#ccc}
+footer{text-align:center;padding:25px;color:#999}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">ZENITH <span>ANIME</span></div>
-  <input id="search" class="search" placeholder="Search anime..." autocomplete="off">
+  <input id="search" placeholder="Search anime..." autocomplete="off">
 </header>
 
 <section class="hero">
-  <h1>Your Anime Universe</h1>
-  <p>Discover anime, explore stories and find your next favourite series.</p>
-  <button onclick="document.getElementById('anime').scrollIntoView({behavior:'smooth'})">
-    Explore Anime
-  </button>
+  <h1>Anime Universe</h1>
+  <p>Discover your next favourite anime.</p>
 </section>
 
 <main>
-  <h2 class="section-title">🔥 Popular Anime</h2>
-  <div id="status" class="status">Loading anime...</div>
-  <div id="anime" class="grid"></div>
+  <h2>🔥 Popular Anime</h2>
+  <div id="status">Loading anime...</div>
+  <div id="grid" class="grid"></div>
 </main>
 
-<footer>ZENITH ANIME · Anime discovery website</footer>
+<footer>ZENITH ANIME · Discover anime officially</footer>
 
 <script>
 const API = "https://graphql.anilist.co";
-
-/* Change this to your own published website URL. */
-const WEBSITE_URL = "https://sameersinghx45-hash.github.io/zenith-anime-new/";
-
 const query = `
 query {
-  Page(page: 1, perPage: 24) {
-    media(type: ANIME, sort: POPULARITY_DESC, isAdult: false) {
+  Page(page:1,perPage:30) {
+    media(type:ANIME,sort:POPULARITY_DESC,isAdult:false) {
       id
       title { romaji english }
       coverImage { large }
+      seasonYear
       episodes
       averageScore
-      seasonYear
-      genres
-      description(asHtml: false)
-      siteUrl
+      description(asHtml:false)
     }
   }
 }`;
 
-let allAnime = [];
+let animeList = [];
 
-async function loadAnime() {
-  const status = document.getElementById("status");
+function safe(value=""){
+  return String(value).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
 
-  try {
-    const response = await fetch(API, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({query})
+async function loadAnime(){
+  const status=document.getElementById("status");
+  try{
+    const res=await fetch(API,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify({query})
     });
+    if(!res.ok) throw new Error("API error");
+    const json=await res.json();
+    if(!json.data) throw new Error("No data");
 
-    if (!response.ok) throw new Error("Anime service unavailable");
-
-    const result = await response.json();
-    allAnime = result.data.Page.media;
-    status.style.display = "none";
-    renderAnime(allAnime);
-  } catch (error) {
-    status.textContent = "Anime load nahi hua. Internet check karke page refresh karo.";
+    animeList=json.data.Page.media;
+    status.style.display="none";
+    render(animeList);
+  }catch(e){
+    status.textContent=
+      "Anime load nahi hua. Internet check karke refresh karo.";
   }
 }
 
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
-  }[char]));
-}
-
-function renderAnime(list) {
-  const container = document.getElementById("anime");
-
-  if (!list.length) {
-    container.innerHTML = '<p class="status">No anime found.</p>';
+function render(list){
+  const grid=document.getElementById("grid");
+  if(!list.length){
+    grid.innerHTML="<p>No anime found.</p>";
     return;
   }
 
-  container.innerHTML = list.map(anime => {
-    const title = anime.title.english || anime.title.romaji || "Anime";
-    const year = anime.seasonYear || "Year unknown";
-    const score = anime.averageScore
-      ? (anime.averageScore / 10).toFixed(1) + "/10"
-      : "Not rated";
+  grid.innerHTML=list.map(a=>{
+    const title=a.title.english||a.title.romaji||"Anime";
+    const score=a.averageScore
+      ?(a.averageScore/10).toFixed(1)+"/10":"N/A";
 
     return `
       <article class="card">
-        <img src="${escapeHTML(anime.coverImage.large)}"
-             alt="${escapeHTML(title)}"
-             loading="lazy">
+        <img src="${safe(a.coverImage.large)}"
+             alt="${safe(title)}" loading="lazy">
         <div class="info">
-          <h3>${escapeHTML(title)}</h3>
-          <div class="meta">${year} · ⭐ ${score}</div>
-          <button onclick="showDetails(${anime.id})">Anime Details</button>
+          <h3>${safe(title)}</h3>
+          <div class="meta">
+            ${a.seasonYear||"Year N/A"} · ⭐ ${score}
+          </div>
+          <button onclick="watchAnime(${a.id})">
+            Watch Officially
+          </button>
+          <button class="details" onclick="details(${a.id})">
+            Anime Details
+          </button>
         </div>
       </article>`;
   }).join("");
 }
 
-function showDetails(id) {
-  const anime = allAnime.find(item => item.id === id);
-  if (!anime) return;
+function watchAnime(id){
+  const a=animeList.find(x=>x.id===id);
+  if(!a)return;
 
-  const title = anime.title.english || anime.title.romaji;
-  const genres = anime.genres.join(", ") || "Not listed";
-  const description = (anime.description || "No description available.")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .slice(0, 600);
+  const title=a.title.english||a.title.romaji;
+  const url="https://www.justwatch.com/in/search?q="
+            +encodeURIComponent(title);
 
-  const details = [
-    title,
-    "",
-    "Year: " + (anime.seasonYear || "Unknown"),
-    "Episodes: " + (anime.episodes || "Unknown"),
-    "Genres: " + genres,
-    "",
-    description,
-    "",
-    "Official information: " + anime.siteUrl
-  ].join("\n");
-
-  alert(details);
-  // Anime information comes from AniList.
-  // Streaming links should point to authorized providers.
+  window.open(url,"_blank","noopener,noreferrer");
 }
 
-document.getElementById("search").addEventListener("input", event => {
-  const term = event.target.value.toLowerCase().trim();
+function details(id){
+  const a=animeList.find(x=>x.id===id);
+  if(!a)return;
 
-  renderAnime(allAnime.filter(anime => {
-    const title = (
-      (anime.title.english || "") + " " +
-      (anime.title.romaji || "")
-    ).toLowerCase();
+  const title=a.title.english||a.title.romaji;
+  const description=(a.description||"No description available.")
+    .replace(/<[^>]*>/g," ")
+    .slice(0,650);
 
-    return title.includes(term);
-  }));
+  alert(
+    title+"\n\n"+
+    "Year: "+(a.seasonYear||"Unknown")+"\n"+
+    "Episodes: "+(a.episodes||"Unknown")+"\n\n"+
+    description
+  );
+}
+
+document.getElementById("search").addEventListener("input",e=>{
+  const term=e.target.value.toLowerCase().trim();
+  render(animeList.filter(a=>
+    ((a.title.english||"")+" "+(a.title.romaji||""))
+      .toLowerCase().includes(term)
+  ));
 });
 
 loadAnime();
