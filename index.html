@@ -3,191 +3,135 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zenith Anime</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#090910;color:#fff;font-family:Arial,sans-serif}
-header{padding:22px 5%;background:#11111c;border-bottom:1px solid #29243d}
-.logo{font-size:27px;font-weight:900;color:#b794ff}
-.logo span{color:#fff}
-header p{color:#aaa;margin-top:7px;font-size:13px}
-.hero{padding:42px 5% 28px;background:radial-gradient(ellipse at top right,#38205f,#090910 70%)}
-.hero h1{font-size:clamp(30px,7vw,48px);margin-bottom:12px}
-.hero h1 span{color:#b794ff}
-.hero p{color:#c0bdcc;line-height:1.6;margin-bottom:22px}
-.search{width:100%;max-width:500px;padding:14px;border-radius:10px;border:1px solid #403653;background:#151520;color:white;font-size:16px;outline:none}
-.search:focus{border-color:#b794ff}
-main{padding:25px 5% 50px}
-.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px}
-.filter{padding:9px 14px;border:1px solid #353044;background:#151520;color:#ddd;border-radius:20px;cursor:pointer}
-.filter.active,.filter:hover{background:#9b70ff;color:white;border-color:#9b70ff}
-.section-title{font-size:22px;margin-bottom:18px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.card{background:#14141f;border:1px solid #292638;border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s}
-.card:hover{transform:translateY(-4px);border-color:#a47aff}
-.poster{height:190px;display:flex;flex-direction:column;justify-content:space-between;padding:13px;position:relative;overflow:hidden}
-.poster:before{content:"";position:absolute;width:160px;height:160px;border:2px solid #ffffff20;border-radius:50%;right:-45px;top:20px;box-shadow:0 0 0 20px #ffffff08,0 0 0 40px #ffffff05}
-.poster:after{content:"";position:absolute;width:100px;height:200px;background:#ffffff12;transform:rotate(35deg);right:35px;top:-30px}
-.poster>*{position:relative;z-index:1}
-.badge{font-size:10px;background:#0008;padding:6px 8px;border-radius:5px;align-self:flex-start}
-.poster-title{font-weight:900;font-size:23px;text-shadow:0 2px 10px #000}
-.p1{background:linear-gradient(145deg,#ed704d,#611c45 60%,#170e25)}
-.p2{background:linear-gradient(145deg,#e9b44c,#7443c8 60%,#161027)}
-.p3{background:linear-gradient(145deg,#4f9fd4,#193f7b 60%,#101329)}
-.p4{background:linear-gradient(145deg,#e5a75c,#a53d43 60%,#27132d)}
-.p5{background:linear-gradient(145deg,#42c5b0,#176b8a 60%,#101c39)}
-.p6{background:linear-gradient(145deg,#a58be9,#493b8c 60%,#17112d)}
-.info{padding:13px}
-.info h3{font-size:15px;margin-bottom:7px}
-.meta{color:#aaa;font-size:12px;line-height:1.6}
-.genre{display:inline-block;margin-top:10px;color:#c8aaff;background:#29203d;padding:5px 8px;border-radius:5px;font-size:11px}
-.empty{grid-column:1/-1;color:#aaa;padding:30px 0;text-align:center}
-footer{text-align:center;padding:25px;color:#888;border-top:1px solid #242130;font-size:12px}
-#modal{display:none;position:fixed;inset:0;background:#000c;z-index:5;align-items:center;justify-content:center;padding:20px}
-.modal-box{background:#171622;border:1px solid #44365f;border-radius:15px;padding:25px;width:100%;max-width:420px}
-.modal-box h2{margin:14px 0}
-.modal-box p{color:#ccc;line-height:1.7}
-.close{float:right;background:#30283e;color:white;border:0;border-radius:7px;padding:8px 12px;cursor:pointer}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.poster{height:250px}}
-@media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0b12;color:#f5f5f7;font-family:Arial,sans-serif}
+header{padding:22px 16px;background:#151522;text-align:center;border-bottom:1px solid #29293c}
+h1{margin:0;color:#9b87ff;font-size:30px}
+header p{color:#b8b8ca;margin-bottom:0}
+main{max-width:1000px;margin:auto;padding:18px}
+input,select{width:100%;padding:13px;margin-bottom:12px;border-radius:10px;border:1px solid #38384c;background:#171725;color:white;font-size:16px}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px}
+.card{background:#171725;border:1px solid #29293c;border-radius:14px;overflow:hidden;cursor:pointer}
+.poster{height:155px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:21px;font-weight:bold;background:linear-gradient(140deg,#36256c,#171725 65%,#5b285f)}
+.card h3{margin:12px 10px 5px}
+.card p{color:#b9b9ca;margin:0 10px 14px;font-size:13px}
+button{border:0;border-radius:9px;padding:11px 14px;background:#7860ef;color:white;font-weight:bold;cursor:pointer}
+.modal{display:none;position:fixed;inset:0;background:#000d;z-index:5;overflow:auto;padding:18px;align-items:center;justify-content:center}
+.panel{width:100%;max-width:650px;background:#171725;border:1px solid #38384c;border-radius:16px;padding:18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top h2{margin:8px 0}
+#close{background:#333348;font-size:18px}
+.player{position:relative;width:100%;aspect-ratio:16/9;margin-top:18px;background:#050508;border-radius:12px;overflow:hidden}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.note{font-size:13px;color:#b9b9ca;line-height:1.5}
+footer{text-align:center;padding:25px;color:#9696a8;font-size:13px}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">ZENITH <span>ANIME</span></div>
-  <p>Your anime discovery zone ✦</p>
+<h1>ZENITH ANIME</h1>
+<p>Discover your next anime ✨</p>
 </header>
-
-<section class="hero">
-  <h1>Discover Your <span>Next Anime.</span></h1>
-  <p>Explore your favourite series, discover new adventures and find your next watch.</p>
-  <input id="search" class="search" type="search" placeholder="Search anime..." aria-label="Search anime">
-</section>
-
 <main>
-  <div class="filters" id="filters">
-    <button class="filter active" data-genre="All">All Anime</button>
-    <button class="filter" data-genre="Action">Action</button>
-    <button class="filter" data-genre="Fantasy">Fantasy</button>
-    <button class="filter" data-genre="Sports">Sports</button>
-    <button class="filter" data-genre="Adventure">Adventure</button>
-  </div>
-  <h2 class="section-title">✦ Explore Anime</h2>
-  <div class="grid" id="animeGrid"></div>
-</main>
-
-<div id="modal">
-  <div class="modal-box">
-    <button class="close" id="close">Close ✕</button>
-    <div id="modalContent"></div>
-  </div>
+<input id="search" placeholder="Search anime..." aria-label="Search anime">
+<div class="filters">
+<select id="genre">
+<option value="All">All genres</option>
+<option>Action</option>
+<option>Fantasy</option>
+<option>Adventure</option>
+<option>Sports</option>
+</select>
+<select id="sort">
+<option value="az">Name: A–Z</option>
+<option value="new">Year: newest</option>
+</select>
 </div>
-
-<footer>ZENITH ANIME · Discover your next adventure ✦</footer>
-
+<div id="grid" class="grid"></div>
+</main>
+<div id="modal" class="modal">
+<div class="panel">
+<div class="top">
+<h2 id="title"></h2>
+<button id="close" aria-label="Close">✕</button>
+</div>
+<div id="details"></div>
+<div id="playerArea"></div>
+<p class="note">Videos are embedded from YouTube. Availability depends on the video owner and YouTube's playback settings.</p>
+</div>
+</div>
+<footer>Zenith Anime • Fan discovery website</footer>
 <script>
 const animeData = [
-const animeData = [
-  {
-    title: "Demon Slayer",
-    genre: "Action",
-    year: 2019,
-    season: "4 seasons",
-    trailer: "Jd_B6ox3qGc",
-    desc: "Tanjiro begins his journey to protect his sister."
-  },
-  {
-    title: "Solo Leveling",
-    genre: "Fantasy",
-    year: 2024,
-    season: "2 seasons",
-    trailer: "Bca7dy1Hntc",
-    desc: "Sung Jinwoo discovers a mysterious power."
-  },
-  {
-    title: "Naruto",
-    genre: "Action",
-    year: 2002,
-    season: "Long-running series",
-    trailer: "",
-    desc: "A young ninja dreams of becoming Hokage."
-  },
-  {
-    title: "One Piece",
-    genre: "Adventure",
-    year: 1999,
-    season: "Long-running series",
-    trailer: "",
-    desc: "Luffy and his crew search for the legendary treasure."
-  },
-  {
-    title: "Blue Lock",
-    genre: "Sports",
-    year: 2022,
-    season: "2 seasons",
-    trailer: "scNHgkRlJn4",
-    desc: "Strikers compete to become Japan's best striker."
-  },
-  {
-    title: "Jujutsu Kaisen",
-    genre: "Action",
-    year: 2020,
-    season: "2 seasons",
-    trailer: "qrEAcRQzzbA",
-    desc: "Yuji enters the dangerous world of curses."
-  }
+{title:"Demon Slayer",genre:"Action",year:2019,season:"Multiple seasons",trailer:"Jd_B6ox3qGc",desc:"Tanjiro begins a journey to protect his sister and fight demons."},
+{title:"Solo Leveling",genre:"Fantasy",year:2024,season:"Multiple seasons",trailer:"Bca7dy1Hntc",desc:"Sung Jinwoo discovers a mysterious power."},
+{title:"Naruto",genre:"Action",year:2002,season:"Long-running series",trailer:"",desc:"A young ninja dreams of becoming Hokage."},
+{title:"One Piece",genre:"Adventure",year:1999,season:"Long-running series",trailer:"",desc:"Luffy and his crew search for legendary treasure."},
+{title:"Blue Lock",genre:"Sports",year:2022,season:"Multiple seasons",trailer:"scNHgkRlJn4",desc:"Strikers compete to become Japan's best striker."},
+{title:"Jujutsu Kaisen",genre:"Action",year:2020,season:"Multiple seasons",trailer:"qrEAcRQzzbA",desc:"Yuji enters the dangerous world of curses."}
 ];
-  }
 
-  grid.innerHTML = results.map(anime => {
-    const index = animeData.indexOf(anime);
-    return `
-      <article class="card" tabindex="0" data-index="${index}">
-        <div class="poster p${index+1}">
-          <span class="badge">ANIME · ${anime.year}</span>
-          <div class="poster-title">${anime.title}</div>
-        </div>
-        <div class="info">
-          <h3>${anime.title}</h3>
-          <div class="meta">${anime.year} · ${anime.season}</div>
-          <span class="genre">${anime.genre}</span>
-        </div>
-      </article>`;
-  }).join("");
+const grid=document.getElementById("grid");
+const search=document.getElementById("search");
+const genre=document.getElementById("genre");
+const sort=document.getElementById("sort");
+const modal=document.getElementById("modal");
+
+function render(){
+ let items=animeData.filter(a=>
+  a.title.toLowerCase().includes(search.value.toLowerCase()) &&
+  (genre.value==="All"||a.genre===genre.value)
+ );
+ if(sort.value==="az")items.sort((a,b)=>a.title.localeCompare(b.title));
+ else items.sort((a,b)=>b.year-a.year);
+ grid.innerHTML=items.map(a=>`
+  <article class="card" data-title="${a.title}">
+   <div class="poster">${a.title}</div>
+   <h3>${a.title}</h3>
+   <p>${a.genre} • ${a.year}</p>
+  </article>
+ `).join("");
 }
-
-document.getElementById("filters").addEventListener("click",event=>{
-  const button = event.target.closest("button[data-genre]");
-  if(!button) return;
-  activeGenre = button.dataset.genre;
-  document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b===button));
-  renderCards();
-});
-
-search.addEventListener("input",renderCards);
+search.addEventListener("input",render);
+genre.addEventListener("change",render);
+sort.addEventListener("change",render);
 
 grid.addEventListener("click",event=>{
-  const card = event.target.closest(".card");
-  if(!card) return;
-  const anime = animeData[Number(card.dataset.index)];
-  document.getElementById("modalContent").innerHTML =
-    `<h2>${anime.title}</h2>
-     <p><strong>Genre:</strong> ${anime.genre}<br>
-     <strong>Year:</strong> ${anime.year}<br>
-     <strong>Series:</strong> ${anime.season}</p>
-     <p style="margin-top:14px">${anime.desc}</p>`;
-  document.getElementById("modal").style.display="flex";
+ const card=event.target.closest(".card");
+ if(!card)return;
+ const anime=animeData.find(a=>a.title===card.dataset.title);
+ document.getElementById("title").textContent=anime.title;
+ document.getElementById("details").innerHTML=
+  `<p><strong>Genre:</strong> ${anime.genre}<br>
+  <strong>Year:</strong> ${anime.year}<br>
+  <strong>Series:</strong> ${anime.season}</p>
+  <p>${anime.desc}</p>`;
+ document.getElementById("playerArea").innerHTML=anime.trailer
+  ? `<div class="player"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(anime.trailer)}" title="${anime.title} trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
+  : `<p class="note">Trailer has not been added yet.</p>`;
+ modal.style.display="flex";
 });
-
 document.getElementById("close").addEventListener("click",()=>{
-  document.getElementById("modal").style.display="none";
+ modal.style.display="none";
+ document.getElementById("playerArea").innerHTML="";
 });
-document.getElementById("modal").addEventListener("click",event=>{
-  if(event.target.id==="modal") event.currentTarget.style.display="none";
+modal.addEventListener("click",event=>{
+ if(event.target===modal){
+  modal.style.display="none";
+  document.getElementById("playerArea").innerHTML="";
+ }
 });
-
-renderCards();
+document.addEventListener("keydown",event=>{
+ if(event.key==="Escape"){
+  modal.style.display="none";
+  document.getElementById("playerArea").innerHTML="";
+ }
+});
+render();
 </script>
 </body>
 </html>
