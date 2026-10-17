@@ -3,286 +3,393 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zenith Anime</title>
 <style>
+:root{color-scheme:dark;--bg:#090b14;--panel:#141827;--accent:#8b5cf6;--muted:#a7aec4}
 *{box-sizing:border-box}
-body{margin:0;background:#090b12;color:#f5f5ff;font-family:Arial,sans-serif}
-header{padding:22px;background:#121624;text-align:center}
-h1{margin:0;color:#a78bfa}
-main{max-width:1100px;margin:auto;padding:18px}
-input,button,select{padding:12px;border-radius:8px;border:1px solid #343950;font-size:15px}
-input,select{background:#171b2a;color:white;max-width:100%}
-button{background:#8b5cf6;color:white;border:0;cursor:pointer}
-.search{display:flex;gap:8px;margin:18px 0}
-.search input{flex:1;min-width:0}
-#status{color:#c4b5fd;line-height:1.6}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px}
-.card{background:#151a29;border:1px solid #30364b;border-radius:12px;overflow:hidden;cursor:pointer}
-.card img{width:100%;height:205px;object-fit:cover;background:#222}
-.card h3{font-size:15px;padding:0 10px}
-.card p{font-size:12px;color:#b8bfd1;padding:0 10px}
-.panel{margin-top:25px;padding:16px;background:#151a29;border-radius:12px}
-.row{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-.row>*{flex:1}
-.episode{padding:12px;border-bottom:1px solid #34394b;line-height:1.5}
-.episode small{display:block;color:#b8bfd1}
+body{margin:0;background:var(--bg);color:#f5f6ff;font-family:Arial,sans-serif}
+header{padding:24px 5%;background:linear-gradient(120deg,#201047,#10172d);border-bottom:1px solid #292b45}
+h1{margin:0;color:#c4b5fd;font-size:30px}
+header p{color:#c7c8dd;margin-bottom:0}
+main{max-width:1200px;margin:auto;padding:22px 16px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+input,select,button{font:inherit;padding:12px;border-radius:10px;border:1px solid #343951;background:#171b2c;color:white}
+input{flex:1;min-width:180px}
+button{background:var(--accent);border:0;cursor:pointer;font-weight:bold}
+button:disabled{opacity:.4}
+h2{font-size:21px}
+.status{color:var(--muted);padding:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:15px}
+.card{background:var(--panel);border:1px solid #272c41;border-radius:12px;overflow:hidden;cursor:pointer}
+.card img{width:100%;height:205px;object-fit:cover;background:#20243a}
+.card div{padding:10px}
+.card h3{font-size:14px;margin:0 0 8px;line-height:1.4}
+.small{font-size:12px;color:var(--muted)}
+.detail{margin-top:25px;padding:18px;background:var(--panel);border-radius:14px}
+.detailTop{display:flex;gap:16px;align-items:flex-start}
+.detailTop img{width:115px;border-radius:10px}
+.seasonList{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.seasonBtn{background:#292440;border:1px solid #55447e}
+.seasonBtn.active{background:var(--accent)}
+.episodes{display:grid;gap:8px}
+.episode{padding:12px;background:#1b2032;border-radius:9px;display:flex;gap:10px;align-items:flex-start}
+.episode b{color:#c4b5fd;min-width:30px}
+.episode span{overflow-wrap:anywhere}
+nav{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:20px 0}
 a{color:#c4b5fd}
-footer{text-align:center;color:#aab0c1;padding:25px}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
+@media(min-width:700px){.card img{height:250px}}
 </style>
 </head>
 <body>
 <header>
-  <h1>ZENITH ANIME</h1>
-  <p>Discover anime • Browse episodes • Explore seasons</p>
+  <h1>✦ ZENITH ANIME</h1>
+  <p>Explore anime • Discover seasons • Browse episodes</p>
 </header>
 
 <main>
-  <div class="search">
-    <input id="query" placeholder="Search anime name...">
+  <div class="controls">
+    <input id="search" placeholder="Search any anime..." aria-label="Search anime">
+    <select id="genre" aria-label="Genre">
+      <option value="">All genres</option>
+      <option value="1">Action</option>
+      <option value="2">Adventure</option>
+      <option value="4">Comedy</option>
+      <option value="8">Drama</option>
+      <option value="10">Fantasy</option>
+      <option value="22">Romance</option>
+      <option value="24">Sci-Fi</option>
+      <option value="14">Horror</option>
+      <option value="7">Mystery</option>
+      <option value="36">Slice of Life</option>
+    </select>
     <button id="searchBtn">Search</button>
   </div>
-  <p id="status">Loading popular anime...</p>
-  <div id="results" class="grid"></div>
 
-  <section id="details" class="panel" hidden>
-    <h2 id="animeTitle">Anime</h2>
-    <p id="animeInfo"></p>
-    <p id="relations"></p>
-    <div class="row">
-      <select id="seasonSelect" aria-label="Related anime entries"></select>
-      <button id="loadEpisodes">Load episodes</button>
-    </div>
-    <p id="episodeStatus"></p>
-    <div id="episodes"></div>
-    <div class="row">
-      <button id="prevPage">Previous page</button>
-      <button id="nextPage">Next page</button>
-    </div>
-    <p id="pageInfo"></p>
-    <p><a id="malLink" target="_blank" rel="noopener noreferrer">Open anime information source</a></p>
+  <div id="status" class="status" aria-live="polite">Loading popular anime...</div>
+  <section id="results" class="grid"></section>
+  <nav id="catalogNav" hidden>
+    <button id="prevCatalog">Previous</button>
+    <span id="catalogPage"></span>
+    <button id="nextCatalog">Next</button>
+  </nav>
+
+  <section id="detail" class="detail" hidden>
+    <h2 id="animeTitle">Anime details</h2>
+    <div id="animeInfo"></div>
+    <h2>Related titles / Seasons</h2>
+    <p class="small">Related titles are supplied by the database and may include movies, specials or spin-offs. They are not guaranteed to be numbered seasons.</p>
+    <div id="seasons" class="seasonList"></div>
+    <h2 id="episodeHeading">Episodes</h2>
+    <div id="episodeStatus" class="status"></div>
+    <div id="episodes" class="episodes"></div>
+    <nav id="episodeNav" hidden>
+      <button id="prevEpisodes">Previous</button>
+      <span id="episodePage"></span>
+      <button id="nextEpisodes">Next</button>
+    </nav>
+    <p id="officialLinks"></p>
   </section>
 </main>
-
-<footer>Zenith Anime · Catalogue and information</footer>
+<footer>Zenith Anime • Anime information powered by Jikan API</footer>
 
 <script>
 const API = "https://api.jikan.moe/v4";
 const $ = id => document.getElementById(id);
 
-let selected = null;
-let page = 1;
-let lastPage = 1;
-let busy = false;
-let requestId = 0;
+let catalogPage = 1;
+let episodePage = 1;
+let selectedAnime = null;
+let lastQuery = "";
+let lastGenre = "";
+let catalogRequest = 0;
+let detailRequest = 0;
+let episodeRequest = 0;
+let relatedTitles = [];
 
 async function api(path) {
   const response = await fetch(API + path);
-  if (!response.ok) {
-    if (response.status === 429) {
-      throw new Error("Too many requests. Wait a few seconds and try again.");
-    }
-    throw new Error("Database request failed (" + response.status + ").");
-  }
+  if (!response.ok) throw new Error(
+    response.status === 429
+      ? "Too many requests. Wait a few seconds and try again."
+      : "Anime database temporarily unavailable. Try again shortly."
+  );
   return response.json();
 }
 
-function safeText(value) {
-  return value == null || value === "" ? "Not available" : String(value);
+function message(id, text) {
+  $(id).textContent = text;
 }
 
-function renderCards(items) {
-  $("results").replaceChildren();
+function safeText(value, fallback = "Information unavailable") {
+  return value == null || value === "" ? fallback : String(value);
+}
 
-  items.forEach(anime => {
-    const card = document.createElement("article");
-    card.className = "card";
-    card.tabIndex = 0;
+function makeCard(anime) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", "View " + anime.title);
 
-    const img = document.createElement("img");
-    img.loading = "lazy";
-    img.alt = anime.title;
-    img.src = anime.images?.jpg?.image_url || "";
+  const img = document.createElement("img");
+  img.loading = "lazy";
+  img.src = anime.images?.jpg?.large_image_url ||
+            anime.images?.jpg?.image_url || "";
+  img.alt = anime.title;
 
-    const title = document.createElement("h3");
-    title.textContent = anime.title;
+  const body = document.createElement("div");
+  const title = document.createElement("h3");
+  title.textContent = anime.title;
+  const meta = document.createElement("p");
+  meta.className = "small";
+  meta.textContent =
+    (anime.type || "Anime") + " • " +
+    (anime.episodes == null ? "Episode count unknown" :
+      anime.episodes + " episodes");
+  body.append(title, meta);
+  card.append(img, body);
 
-    const info = document.createElement("p");
-    info.textContent =
-      (anime.type || "Anime") + " · " +
-      (anime.episodes == null ? "Episode count unknown" :
-       anime.episodes + " episodes");
-
-    card.append(img, title, info);
-    card.addEventListener("click", () => openAnime(anime));
-    card.addEventListener("keydown", e => {
-      if (e.key === "Enter") openAnime(anime);
-    });
-    $("results").append(card);
+  card.addEventListener("click", () => openAnime(anime));
+  card.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openAnime(anime);
+    }
   });
+  return card;
 }
 
-async function searchAnime() {
-  const q = $("query").value.trim();
-  $("status").textContent = "Loading anime...";
+async function loadCatalog(page = 1) {
+  const requestId = ++catalogRequest;
+  catalogPage = page;
+  lastQuery = $("search").value.trim();
+  lastGenre = $("genre").value;
+  message("status", "Loading anime...");
   $("results").replaceChildren();
+  $("catalogNav").hidden = true;
 
   try {
-    const path = q
-      ? "/anime?q=" + encodeURIComponent(q) + "&page=1&limit=24"
-      : "/top/anime?page=1&limit=24";
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: "24",
+      sfw: "true"
+    });
+    if (lastQuery) params.set("q", lastQuery);
+    if (lastGenre) params.set("genres", lastGenre);
 
-    const result = await api(path);
-    renderCards(result.data || []);
-    $("status").textContent =
-      (result.data?.length || 0) + " results on this page. Search for more anime by name.";
+    const endpoint = lastQuery || lastGenre
+      ? "/anime?" + params.toString()
+      : "/top/anime?" + params.toString();
+
+    const result = await api(endpoint);
+    if (requestId !== catalogRequest) return;
+
+    const items = result.data || [];
+    if (!items.length) {
+      message("status", "No anime found. Try another search.");
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    items.forEach(anime => fragment.appendChild(makeCard(anime)));
+    $("results").appendChild(fragment);
+    message("status", "Showing " + items.length +
+      " anime • Page " + page);
+
+    const pagination = result.pagination || {};
+    $("catalogNav").hidden = false;
+    $("catalogPage").textContent = "Page " + page;
+    $("prevCatalog").disabled = page <= 1;
+    $("nextCatalog").disabled = !pagination.has_next_page;
   } catch (error) {
-    $("status").textContent = error.message;
+    if (requestId !== catalogRequest) return;
+    message("status", error.message);
   }
 }
 
 async function openAnime(anime) {
-  selected = anime;
-  page = 1;
-  requestId++;
-  $("details").hidden = false;
+  const requestId = ++detailRequest;
+  selectedAnime = anime;
+  episodePage = 1;
+  relatedTitles = [];
+  ++episodeRequest;
+
+  $("detail").hidden = false;
   $("animeTitle").textContent = anime.title;
-  $("animeInfo").textContent =
-    "Type: " + safeText(anime.type) +
-    " · Episodes listed: " + safeText(anime.episodes) +
-    " · Status: " + safeText(anime.status);
-  $("malLink").href = anime.url || "https://myanimelist.net/";
-  $("relations").textContent = "Loading related seasons and entries...";
-  $("seasonSelect").replaceChildren();
+  $("animeInfo").replaceChildren();
+  $("seasons").replaceChildren();
   $("episodes").replaceChildren();
-  $("episodeStatus").textContent = "Loading information...";
-  $("details").scrollIntoView({behavior:"smooth"});
+  $("episodeNav").hidden = true;
+  message("episodeStatus", "Loading episode information...");
+  message("episodeHeading", "Episodes");
+  message("officialLinks", "");
 
-  const id = requestId;
+  const synopsis = document.createElement("p");
+  synopsis.textContent = anime.synopsis || "Synopsis unavailable.";
+  const metadata = document.createElement("p");
+  metadata.className = "small";
+  metadata.textContent =
+    (anime.type || "Anime") + " • " +
+    (anime.year || "Year unknown") + " • Score: " +
+    (anime.score ?? "N/A");
+  $("animeInfo").append(metadata, synopsis);
+  $("detail").scrollIntoView({behavior:"smooth", block:"start"});
+
+  loadEpisodes(anime.mal_id, 1);
+
   try {
-    const [relations, episodes] = await Promise.all([
-      api("/anime/" + anime.mal_id + "/relations"),
-      api("/anime/" + anime.mal_id + "/episodes?page=1")
-    ]);
+    const result = await api("/anime/" + anime.mal_id + "/relations");
+    if (requestId !== detailRequest) return;
 
-    if (id !== requestId) return;
-
-    const related = [];
-    (relations.data || []).forEach(group => {
-      (group.entry || []).forEach(entry => {
-        if (entry.type === "anime" &&
-            !related.some(x => x.mal_id === entry.mal_id)) {
-          related.push(entry);
+    const relations = result.data || [];
+    const unique = new Map();
+    relations.forEach(relation => {
+      (relation.entry || []).forEach(entry => {
+        if (entry.type === "anime" && entry.mal_id !== anime.mal_id) {
+          unique.set(entry.mal_id, entry);
         }
       });
     });
 
-    const currentOption = document.createElement("option");
-    currentOption.value = String(anime.mal_id);
-    currentOption.textContent = anime.title + " (selected)";
-    $("seasonSelect").append(currentOption);
+    const entries = [...unique.values()];
+    if (!entries.length) {
+      message("seasons", "No related anime titles listed in the database.");
+      return;
+    }
 
-    related.forEach(entry => {
-      const option = document.createElement("option");
-      option.value = String(entry.mal_id);
-      option.textContent = entry.name + " · related entry";
-      $("seasonSelect").append(option);
-    });
-
-    $("relations").textContent = related.length
-      ? "Related anime entries are available in the selector. These are database relations, not guaranteed official season numbers."
-      : "No related anime entries were returned by the database.";
-
-    showEpisodes(episodes, id);
+    $("seasons").replaceChildren();
+    for (const entry of entries.slice(0, 20)) {
+      const button = document.createElement("button");
+      button.className = "seasonBtn";
+      button.textContent = entry.name;
+      button.addEventListener("click", async () => {
+        const buttons = $("seasons").querySelectorAll("button");
+        buttons.forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+        try {
+          const data = await api("/anime/" + entry.mal_id);
+          if (requestId !== detailRequest) return;
+          await openAnime(data.data);
+        } catch (error) {
+          message("episodeStatus", error.message);
+        }
+      });
+      $("seasons").appendChild(button);
+    }
   } catch (error) {
-    if (id !== requestId) return;
-    $("episodeStatus").textContent =
-      error.message + " Try again in a few seconds.";
+    if (requestId === detailRequest) {
+      message("seasons", error.message);
+    }
+  }
+
+  try {
+    const stream = await api("/anime/" + anime.mal_id + "/streaming");
+    if (requestId !== detailRequest) return;
+    const links = (stream.data || []).filter(item => item.url);
+    if (links.length) {
+      const label = document.createElement("strong");
+      label.textContent = "Official / listed streaming links: ";
+      $("officialLinks").appendChild(label);
+      links.slice(0, 8).forEach((item, index) => {
+        if (index) $("officialLinks").append(" • ");
+        const link = document.createElement("a");
+        link.href = item.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = item.name || "Watch provider";
+        $("officialLinks").appendChild(link);
+      });
+    } else {
+      message("officialLinks", "No streaming links listed for this title.");
+    }
+  } catch (error) {
+    if (requestId === detailRequest) {
+      message("officialLinks", "Streaming link information unavailable.");
+    }
   }
 }
 
-function showEpisodes(result, id) {
-  if (id !== requestId) return;
+async function loadEpisodes(animeId, page) {
+  const requestId = ++episodeRequest;
+  episodePage = page;
   $("episodes").replaceChildren();
-
-  (result.data || []).forEach(ep => {
-    const item = document.createElement("div");
-    item.className = "episode";
-
-    const title = document.createElement("strong");
-    title.textContent = "Episode " + safeText(ep.mal_id) +
-      ": " + safeText(ep.title);
-
-    const details = document.createElement("small");
-    details.textContent =
-      "Aired: " + safeText(ep.aired) +
-      " · Filler: " + (ep.filler ? "Yes" : "No");
-
-    item.append(title, details);
-    $("episodes").append(item);
-  });
-
-  page = result.pagination?.current_page || page;
-  lastPage = result.pagination?.last_visible_page || 1;
-
-  $("episodeStatus").textContent = result.data?.length
-    ? "Episode information from the database. This is not a video player."
-    : "No episode entries were returned.";
-
-  $("pageInfo").textContent = "Episode list page " + page +
-    " of " + lastPage;
-
-  $("prevPage").disabled = page <= 1;
-  $("nextPage").disabled = page >= lastPage;
-}
-
-async function loadEpisodePage(nextPage) {
-  if (!selected || busy || nextPage < 1) return;
-
-  busy = true;
-  $("episodeStatus").textContent = "Loading episode page...";
-  const id = requestId;
+  $("episodeNav").hidden = true;
+  message("episodeStatus", "Loading episodes, page " + page + "...");
 
   try {
     const result = await api(
-      "/anime/" + selected.mal_id + "/episodes?page=" + nextPage
+      "/anime/" + animeId + "/episodes?page=" + page
     );
-    if (id !== requestId) return;
-    showEpisodes(result, id);
+    if (requestId !== episodeRequest) return;
+
+    const items = result.data || [];
+    if (!items.length && page === 1) {
+      message("episodeStatus",
+        "No episode list is available for this title.");
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    items.forEach(ep => {
+      const row = document.createElement("div");
+      row.className = "episode";
+      const number = document.createElement("b");
+      number.textContent = ep.mal_id == null ? "—" : ep.mal_id;
+      const details = document.createElement("div");
+      const title = document.createElement("span");
+      title.textContent = safeText(ep.title, "Episode title unavailable");
+      details.appendChild(title);
+
+      const extra = document.createElement("div");
+      extra.className = "small";
+      extra.textContent = [
+        ep.aired ? "Aired: " + ep.aired.slice(0, 10) : "",
+        ep.filler ? "Filler" : "",
+        ep.recap ? "Recap" : ""
+      ].filter(Boolean).join(" • ");
+      if (extra.textContent) details.appendChild(extra);
+
+      row.append(number, details);
+      fragment.appendChild(row);
+    });
+    $("episodes").appendChild(fragment);
+
+    const pagination = result.pagination || {};
+    message("episodeStatus",
+      items.length + " episodes shown on page " + page +
+      ". Database completeness may vary.");
+
+    $("episodeNav").hidden = false;
+    $("episodePage").textContent = "Page " + page;
+    $("prevEpisodes").disabled = page <= 1;
+    $("nextEpisodes").disabled = !pagination.has_next_page;
   } catch (error) {
-    $("episodeStatus").textContent = error.message;
-  } finally {
-    busy = false;
+    if (requestId !== episodeRequest) return;
+    message("episodeStatus", error.message);
   }
 }
 
-$("searchBtn").addEventListener("click", searchAnime);
-$("query").addEventListener("keydown", e => {
-  if (e.key === "Enter") searchAnime();
+$("searchBtn").addEventListener("click", () => loadCatalog(1));
+$("search").addEventListener("keydown", e => {
+  if (e.key === "Enter") loadCatalog(1);
 });
-
-$("loadEpisodes").addEventListener("click", async () => {
-  const id = Number($("seasonSelect").value);
-  if (!id) return;
-
-  if (selected && id === selected.mal_id) {
-    await loadEpisodePage(1);
-    return;
-  }
-
-  try {
-    const result = await api("/anime/" + id);
-    const anime = result.data;
-    if (anime) openAnime(anime);
-  } catch (error) {
-    $("episodeStatus").textContent = error.message;
+$("genre").addEventListener("change", () => loadCatalog(1));
+$("prevCatalog").addEventListener("click", () =>
+  loadCatalog(Math.max(1, catalogPage - 1)));
+$("nextCatalog").addEventListener("click", () =>
+  loadCatalog(catalogPage + 1));
+$("prevEpisodes").addEventListener("click", () => {
+  if (selectedAnime && episodePage > 1) {
+    loadEpisodes(selectedAnime.mal_id, episodePage - 1);
   }
 });
+$("nextEpisodes").addEventListener("click", () => {
+  if (selectedAnime) loadEpisodes(selectedAnime.mal_id, episodePage + 1);
+});
 
-$("prevPage").addEventListener("click", () => loadEpisodePage(page - 1));
-$("nextPage").addEventListener("click", () => loadEpisodePage(page + 1));
-
-searchAnime();
+loadCatalog();
 </script>
 </body>
 </html>
