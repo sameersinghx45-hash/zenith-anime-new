@@ -1,110 +1,276 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zenith Anime Player</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #080810;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    h1 { color: #00f5ff; }
-    .panel {
-      max-width: 850px;
-      margin: 20px auto;
-      padding: 18px;
-      background: #141421;
-      border: 1px solid #292943;
-      border-radius: 16px;
-    }
-    input, button {
-      width: 100%;
-      padding: 13px;
-      margin: 8px 0;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    input {
-      color: white;
-      background: #090912;
-      border: 1px solid #45455d;
-    }
-    button {
-      border: 0;
-      color: #080810;
-      background: #00f5ff;
-      font-weight: bold;
-    }
-    .player {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      margin-top: 15px;
-      background: black;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    .note { color: #b8b8c9; line-height: 1.5; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zenith Anime</title>
+<style>
+:root {
+  --bg: #080810;
+  --panel: #141421;
+  --neon: #00f5ff;
+  --muted: #aaaabd;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 20px 5%;
+  border-bottom: 1px solid #25253b;
+  background: #0c0c16;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.logo {
+  color: var(--neon);
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+main { max-width: 1200px; margin: auto; padding: 22px; }
+.hero {
+  padding: 28px 0;
+}
+.hero h1 { font-size: clamp(30px, 6vw, 52px); margin: 0 0 12px; }
+.neon { color: var(--neon); }
+p { color: var(--muted); line-height: 1.6; }
+input, button {
+  font: inherit;
+  border-radius: 9px;
+  padding: 12px;
+}
+input {
+  width: 100%;
+  color: white;
+  background: #0c0c16;
+  border: 1px solid #38384e;
+}
+button {
+  background: var(--neon);
+  color: #050510;
+  border: 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover { filter: brightness(.88); }
+.search { max-width: 550px; margin-top: 18px; }
+.section-title { margin: 28px 0 16px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid #27273d;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.poster {
+  min-height: 155px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 14px;
+  background: linear-gradient(145deg, #182a45, #301442, #10101b);
+  color: var(--neon);
+  font-weight: 900;
+  font-size: 19px;
+}
+.card-body { padding: 12px; }
+.card h3 { font-size: 16px; margin: 0 0 8px; }
+.card p { font-size: 13px; margin: 0 0 12px; }
+.card button { width: 100%; font-size: 13px; }
+.panel {
+  margin-top: 25px;
+  padding: 18px;
+  border: 1px solid #292943;
+  background: var(--panel);
+  border-radius: 14px;
+}
+.player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+.player iframe { width: 100%; height: 100%; border: 0; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row input { flex: 1 1 220px; }
+.row button { flex: 0 0 auto; }
+.small { font-size: 13px; }
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  border-top: 1px solid #25253b;
+  margin-top: 35px;
+}
+[hidden] { display: none !important; }
+@media (max-width: 480px) {
+  main { padding: 16px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .poster { min-height: 125px; font-size: 16px; }
+  .panel { padding: 13px; }
+}
+</style>
 </head>
 <body>
-  <div class="panel">
-    <h1>ZENITH ANIME</h1>
-    <h2>Watch Anime</h2>
-    <p class="note">
-      Play officially available episodes from an embedded playlist.
-    </p>
+<header>
+  <nav>
+    <div class="logo">ZENITH ANIME</div>
+    <span class="small">ANIME • YOUR WORLD</span>
+  </nav>
+</header>
 
-    <label for="playlist">YouTube playlist ID</label>
-    <input id="playlist"
-      placeholder="Paste playlist ID here">
+<main>
+  <section class="hero">
+    <h1>ENTER THE <span class="neon">ANIME</span> WORLD</h1>
+    <p>Discover anime, choose a title, and watch available episodes in the built-in player.</p>
+    <div class="search">
+      <input id="search" type="search" placeholder="Search anime..." aria-label="Search anime">
+    </div>
+  </section>
 
-    <button onclick="loadPlaylist()">Load Episodes</button>
+  <h2 class="section-title">Anime Library</h2>
+  <div class="grid" id="animeGrid"></div>
+  <p id="empty" hidden>No anime found. Try another search.</p>
+
+  <section class="panel" id="watch">
+    <h2>Watch <span class="neon" id="selectedTitle">Anime</span></h2>
+    <p id="watchInfo">Select an anime, then load an authorized video or playlist below.</p>
 
     <div class="player" id="player">
-      <p class="note" style="padding:15px">
-        Your anime playlist will appear here.
-      </p>
+      <p style="padding:16px">Your selected episode will play here.</p>
     </div>
 
-    <p class="note">
-      Some videos may be unavailable for embedding or in your region.
-    </p>
-  </div>
+    <h3>Load an episode</h3>
+    <p class="small">Enter a YouTube video ID or playlist ID from a source that permits embedding.</p>
+    <label for="videoId">Video ID</label>
+    <div class="row">
+      <input id="videoId" placeholder="YouTube video ID">
+      <button id="playVideo">Play Episode</button>
+    </div>
+    <p class="small">Or load a playlist:</p>
+    <div class="row">
+      <input id="playlistId" placeholder="YouTube playlist ID">
+      <button id="playPlaylist">Load Playlist</button>
+    </div>
+    <p class="small">Videos may be unavailable if the owner disables embedding or restricts playback in your region.</p>
+    <p id="status" role="status" class="small"></p>
+  </section>
+</main>
 
-  <script>
-    function loadPlaylist() {
-      const id = document.getElementById("playlist")
-        .value.trim();
+<footer>ZENITH ANIME · Discover your next adventure</footer>
 
-      // Accept only a YouTube playlist ID.
-      if (!/^PL[\w-]+$/.test(id)) {
-        alert("Enter a valid YouTube playlist ID.");
-        return;
-      }
+<script>
+const animeList = [
+  { title: "Demon Slayer", genre: "Action • Fantasy" },
+  { title: "Solo Leveling", genre: "Action • Adventure" },
+  { title: "Blue Lock", genre: "Sports • Drama" },
+  { title: "Naruto", genre: "Action • Adventure" },
+  { title: "One Piece", genre: "Adventure • Fantasy" },
+  { title: "Haikyuu!!", genre: "Sports • Comedy" },
+  { title: "Attack on Titan", genre: "Action • Drama" },
+  { title: "My Hero Academia", genre: "Action • Superhero" }
+];
 
-      const frame = document.createElement("iframe");
-      frame.src =
-        "https://www.youtube-nocookie.com/embed/videoseries?list=" +
-        encodeURIComponent(id);
-      frame.title = "Zenith Anime playlist player";
-      frame.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      frame.allowFullscreen = true;
-      frame.referrerPolicy = "strict-origin-when-cross-origin";
+const grid = document.getElementById("animeGrid");
+const search = document.getElementById("search");
+const empty = document.getElementById("empty");
+const player = document.getElementById("player");
+const status = document.getElementById("status");
 
-      const player = document.getElementById("player");
-      player.replaceChildren(frame);
-    }
-  </script>
+function renderAnime(query = "") {
+  grid.replaceChildren();
+  const filtered = animeList.filter(anime =>
+    anime.title.toLowerCase().includes(query.toLowerCase())
+  );
+
+  filtered.forEach(anime => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const poster = document.createElement("div");
+    poster.className = "poster";
+    poster.textContent = anime.title;
+
+    const body = document.createElement("div");
+    body.className = "card-body";
+
+    const title = document.createElement("h3");
+    title.textContent = anime.title;
+
+    const genre = document.createElement("p");
+    genre.textContent = anime.genre;
+
+    const button = document.createElement("button");
+    button.textContent = "Select Anime";
+    button.addEventListener("click", () => {
+      document.getElementById("selectedTitle").textContent = anime.title;
+      document.getElementById("watchInfo").textContent =
+        "Selected: " + anime.title + ". Load an authorized episode below.";
+      document.getElementById("watch").scrollIntoView({ behavior: "smooth" });
+    });
+
+    body.append(title, genre, button);
+    card.append(poster, body);
+    grid.append(card);
+  });
+
+  empty.hidden = filtered.length !== 0;
+}
+
+function loadPlayer(url) {
+  const frame = document.createElement("iframe");
+  frame.src = url;
+  frame.title = "Zenith Anime video player";
+  frame.allow =
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  frame.allowFullscreen = true;
+  frame.referrerPolicy = "strict-origin-when-cross-origin";
+  player.replaceChildren(frame);
+  status.textContent = "Player loaded. Press play inside the player.";
+}
+
+document.getElementById("playVideo").addEventListener("click", () => {
+  const id = document.getElementById("videoId").value.trim();
+  if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
+    status.textContent = "Enter a valid 11-character video ID.";
+    return;
+  }
+  loadPlayer("https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id));
+});
+
+document.getElementById("playPlaylist").addEventListener("click", () => {
+  const id = document.getElementById("playlistId").value.trim();
+  if (!/^PL[A-Za-z0-9_-]+$/.test(id)) {
+    status.textContent = "Enter a valid public playlist ID beginning with PL.";
+    return;
+  }
+  loadPlayer(
+    "https://www.youtube-nocookie.com/embed/videoseries?list=" +
+    encodeURIComponent(id)
+  );
+});
+
+search.addEventListener("input", () => renderAnime(search.value));
+renderAnime();
+</script>
 </body>
 </html>
