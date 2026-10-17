@@ -1,1 +1,165 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenith Anime</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#090910;color:#fff;font-family:Arial,sans-serif}
+header{padding:22px 5%;background:#11111c;border-bottom:1px solid #29243d}
+.logo{font-size:27px;font-weight:900;color:#b794ff}
+.logo span{color:#fff}
+header p{color:#aaa;margin-top:7px;font-size:13px}
+.hero{padding:42px 5% 28px;background:radial-gradient(ellipse at top right,#38205f,#090910 70%)}
+.hero h1{font-size:clamp(30px,7vw,48px);margin-bottom:12px}
+.hero h1 span{color:#b794ff}
+.hero p{color:#c0bdcc;line-height:1.6;margin-bottom:22px}
+.search{width:100%;max-width:500px;padding:14px;border-radius:10px;border:1px solid #403653;background:#151520;color:white;font-size:16px;outline:none}
+.search:focus{border-color:#b794ff}
+main{padding:25px 5% 50px}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px}
+.filter{padding:9px 14px;border:1px solid #353044;background:#151520;color:#ddd;border-radius:20px;cursor:pointer}
+.filter.active,.filter:hover{background:#9b70ff;color:white;border-color:#9b70ff}
+.section-title{font-size:22px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{background:#14141f;border:1px solid #292638;border-radius:13px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-4px);border-color:#a47aff}
+.poster{height:190px;display:flex;flex-direction:column;justify-content:space-between;padding:13px;position:relative;overflow:hidden}
+.poster:before{content:"";position:absolute;width:160px;height:160px;border:2px solid #ffffff20;border-radius:50%;right:-45px;top:20px;box-shadow:0 0 0 20px #ffffff08,0 0 0 40px #ffffff05}
+.poster:after{content:"";position:absolute;width:100px;height:200px;background:#ffffff12;transform:rotate(35deg);right:35px;top:-30px}
+.poster>*{position:relative;z-index:1}
+.badge{font-size:10px;background:#0008;padding:6px 8px;border-radius:5px;align-self:flex-start}
+.poster-title{font-weight:900;font-size:23px;text-shadow:0 2px 10px #000}
+.p1{background:linear-gradient(145deg,#ed704d,#611c45 60%,#170e25)}
+.p2{background:linear-gradient(145deg,#e9b44c,#7443c8 60%,#161027)}
+.p3{background:linear-gradient(145deg,#4f9fd4,#193f7b 60%,#101329)}
+.p4{background:linear-gradient(145deg,#e5a75c,#a53d43 60%,#27132d)}
+.p5{background:linear-gradient(145deg,#42c5b0,#176b8a 60%,#101c39)}
+.p6{background:linear-gradient(145deg,#a58be9,#493b8c 60%,#17112d)}
+.info{padding:13px}
+.info h3{font-size:15px;margin-bottom:7px}
+.meta{color:#aaa;font-size:12px;line-height:1.6}
+.genre{display:inline-block;margin-top:10px;color:#c8aaff;background:#29203d;padding:5px 8px;border-radius:5px;font-size:11px}
+.empty{grid-column:1/-1;color:#aaa;padding:30px 0;text-align:center}
+footer{text-align:center;padding:25px;color:#888;border-top:1px solid #242130;font-size:12px}
+#modal{display:none;position:fixed;inset:0;background:#000c;z-index:5;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:#171622;border:1px solid #44365f;border-radius:15px;padding:25px;width:100%;max-width:420px}
+.modal-box h2{margin:14px 0}
+.modal-box p{color:#ccc;line-height:1.7}
+.close{float:right;background:#30283e;color:white;border:0;border-radius:7px;padding:8px 12px;cursor:pointer}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.poster{height:250px}}
+@media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">ZENITH <span>ANIME</span></div>
+  <p>Your anime discovery zone ✦</p>
+</header>
+
+<section class="hero">
+  <h1>Discover Your <span>Next Anime.</span></h1>
+  <p>Explore your favourite series, discover new adventures and find your next watch.</p>
+  <input id="search" class="search" type="search" placeholder="Search anime..." aria-label="Search anime">
+</section>
+
+<main>
+  <div class="filters" id="filters">
+    <button class="filter active" data-genre="All">All Anime</button>
+    <button class="filter" data-genre="Action">Action</button>
+    <button class="filter" data-genre="Fantasy">Fantasy</button>
+    <button class="filter" data-genre="Sports">Sports</button>
+    <button class="filter" data-genre="Adventure">Adventure</button>
+  </div>
+  <h2 class="section-title">✦ Explore Anime</h2>
+  <div class="grid" id="animeGrid"></div>
+</main>
+
+<div id="modal">
+  <div class="modal-box">
+    <button class="close" id="close">Close ✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<footer>ZENITH ANIME · Discover your next adventure ✦</footer>
+
+<script>
+const animeData = [
+  {title:"Demon Slayer",genre:"Action",year:2019,season:"4 seasons",desc:"Tanjiro sets out on a dangerous journey to protect his sister and fight demons."},
+  {title:"Solo Leveling",genre:"Fantasy",year:2024,season:"2 seasons",desc:"A low-ranked hunter discovers a mysterious power that lets him grow stronger."},
+  {title:"Naruto",genre:"Action",year:2002,season:"Long-running series",desc:"A young ninja dreams of becoming the strongest leader in his village."},
+  {title:"One Piece",genre:"Adventure",year:1999,season:"Long-running series",desc:"Luffy and his crew sail across the seas in search of the legendary treasure."},
+  {title:"Blue Lock",genre:"Sports",year:2022,season:"2 seasons",desc:"Strikers compete in an intense football programme to develop Japan's next ace."},
+  {title:"Jujutsu Kaisen",genre:"Action",year:2020,season:"2 seasons",desc:"Yuji enters the world of curses after a dangerous supernatural encounter."}
+];
+
+const grid = document.getElementById("animeGrid");
+const search = document.getElementById("search");
+let activeGenre = "All";
+
+function renderCards(){
+  const query = search.value.toLowerCase().trim();
+  const results = animeData.filter(anime =>
+    anime.title.toLowerCase().includes(query) &&
+    (activeGenre === "All" || anime.genre === activeGenre)
+  );
+
+  if(!results.length){
+    grid.innerHTML = '<div class="empty">No anime found. Try another search!</div>';
+    return;
+  }
+
+  grid.innerHTML = results.map(anime => {
+    const index = animeData.indexOf(anime);
+    return `
+      <article class="card" tabindex="0" data-index="${index}">
+        <div class="poster p${index+1}">
+          <span class="badge">ANIME · ${anime.year}</span>
+          <div class="poster-title">${anime.title}</div>
+        </div>
+        <div class="info">
+          <h3>${anime.title}</h3>
+          <div class="meta">${anime.year} · ${anime.season}</div>
+          <span class="genre">${anime.genre}</span>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+document.getElementById("filters").addEventListener("click",event=>{
+  const button = event.target.closest("button[data-genre]");
+  if(!button) return;
+  activeGenre = button.dataset.genre;
+  document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b===button));
+  renderCards();
+});
+
+search.addEventListener("input",renderCards);
+
+grid.addEventListener("click",event=>{
+  const card = event.target.closest(".card");
+  if(!card) return;
+  const anime = animeData[Number(card.dataset.index)];
+  document.getElementById("modalContent").innerHTML =
+    `<h2>${anime.title}</h2>
+     <p><strong>Genre:</strong> ${anime.genre}<br>
+     <strong>Year:</strong> ${anime.year}<br>
+     <strong>Series:</strong> ${anime.season}</p>
+     <p style="margin-top:14px">${anime.desc}</p>`;
+  document.getElementById("modal").style.display="flex";
+});
+
+document.getElementById("close").addEventListener("click",()=>{
+  document.getElementById("modal").style.display="none";
+});
+document.getElementById("modal").addEventListener("click",event=>{
+  if(event.target.id==="modal") event.currentTarget.style.display="none";
+});
+
+renderCards();
+</script>
+</body>
+</html>
