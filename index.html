@@ -464,5 +464,22 @@ document.getElementById("overlay").addEventListener("click", event => {
 
 loadAnime(true);
 </script>
+  
+<section id="zenith-player" style="display:none;padding:20px;background:#10101d;color:white;border-radius:12px;margin:20px 5%;">
+  <h2 id="player-title">Zenith Anime Player</h2>
+  <p id="player-season">Season 1</p>
+
+  <video id="episode-player" controls playsinline
+    style="width:100%;max-height:65vh;background:#000;border-radius:10px;">
+  </video>
+
+  <p id="player-message">
+    Free, authorized episode source abhi add nahi hua hai.
+  </p>
+
+  <button id="previous-episode" type="button">Previous Episode</button>
+  <button id="next-episode" type="button">Next Episode</button>
+</section>
+  
 </body>
 </html>
