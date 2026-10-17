@@ -88,28 +88,56 @@ footer{text-align:center;padding:25px;color:#888;border-top:1px solid #242130;fo
 
 <script>
 const animeData = [
-  {title:"Demon Slayer",genre:"Action",year:2019,season:"4 seasons",desc:"Tanjiro sets out on a dangerous journey to protect his sister and fight demons."},
-  {title:"Solo Leveling",genre:"Fantasy",year:2024,season:"2 seasons",desc:"A low-ranked hunter discovers a mysterious power that lets him grow stronger."},
-  {title:"Naruto",genre:"Action",year:2002,season:"Long-running series",desc:"A young ninja dreams of becoming the strongest leader in his village."},
-  {title:"One Piece",genre:"Adventure",year:1999,season:"Long-running series",desc:"Luffy and his crew sail across the seas in search of the legendary treasure."},
-  {title:"Blue Lock",genre:"Sports",year:2022,season:"2 seasons",desc:"Strikers compete in an intense football programme to develop Japan's next ace."},
-  {title:"Jujutsu Kaisen",genre:"Action",year:2020,season:"2 seasons",desc:"Yuji enters the world of curses after a dangerous supernatural encounter."}
+const animeData = [
+  {
+    title: "Demon Slayer",
+    genre: "Action",
+    year: 2019,
+    season: "4 seasons",
+    trailer: "Jd_B6ox3qGc",
+    desc: "Tanjiro begins his journey to protect his sister."
+  },
+  {
+    title: "Solo Leveling",
+    genre: "Fantasy",
+    year: 2024,
+    season: "2 seasons",
+    trailer: "Bca7dy1Hntc",
+    desc: "Sung Jinwoo discovers a mysterious power."
+  },
+  {
+    title: "Naruto",
+    genre: "Action",
+    year: 2002,
+    season: "Long-running series",
+    trailer: "",
+    desc: "A young ninja dreams of becoming Hokage."
+  },
+  {
+    title: "One Piece",
+    genre: "Adventure",
+    year: 1999,
+    season: "Long-running series",
+    trailer: "",
+    desc: "Luffy and his crew search for the legendary treasure."
+  },
+  {
+    title: "Blue Lock",
+    genre: "Sports",
+    year: 2022,
+    season: "2 seasons",
+    trailer: "scNHgkRlJn4",
+    desc: "Strikers compete to become Japan's best striker."
+  },
+  {
+    title: "Jujutsu Kaisen",
+    genre: "Action",
+    year: 2020,
+    season: "2 seasons",
+    trailer: "qrEAcRQzzbA",
+    desc: "Yuji enters the dangerous world of curses."
+  }
 ];
-
-const grid = document.getElementById("animeGrid");
-const search = document.getElementById("search");
-let activeGenre = "All";
-
-function renderCards(){
-  const query = search.value.toLowerCase().trim();
-  const results = animeData.filter(anime =>
-    anime.title.toLowerCase().includes(query) &&
-    (activeGenre === "All" || anime.genre === activeGenre)
-  );
-
-  if(!results.length){
-    grid.innerHTML = '<div class="empty">No anime found. Try another search!</div>';
-    return;
   }
 
   grid.innerHTML = results.map(anime => {
