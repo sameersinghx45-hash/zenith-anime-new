@@ -249,86 +249,190 @@ async function loadAnime(reset = true) {
     moreButton.disabled = false;
     searchButton.disabled = false;
   }
-}
 
+  
 async function showDetails(id) {
   const overlay = document.getElementById("overlay");
   const content = document.getElementById("modalContent");
+
   overlay.classList.add("open");
-  content.replaceChildren(makeElement("p", "", "Loading details..."));
+  content.replaceChildren(
+    makeElement("p", "", "Loading anime details...")
+  );
 
   try {
-    const data = await api(detailQuery, {id});
+    const data = await api(detailQuery, { id });
     const anime = data.Media;
+
+    if (!anime) {
+      throw new Error("Anime details not found");
+    }
+
     content.replaceChildren();
+
+    const title =
+      anime.title?.english ||
+      anime.title?.romaji ||
+      "Anime";
 
     const top = makeElement("div", "modalTop");
     const img = makeElement("img", "modalPoster");
-    img.src = anime.coverImage?.extraLarge || anime.coverImage?.large || "";
-    img.alt = anime.title.english || anime.title.romaji || "Anime poster";
+
+    img.src =
+      anime.coverImage?.extraLarge ||
+      anime.coverImage?.large ||
+      "";
+    img.alt = title;
 
     const summary = makeElement("div", "");
     summary.append(
-      makeElement("h2", "", anime.title.english || anime.title.romaji || "Anime"),
-      makeElement("p", "meta", "Score: " +
-        (anime.averageScore ? anime.averageScore / 10 + "/10" : "N/A")),
-      makeElement("p", "meta", "Episodes: " + (anime.episodes ?? "Unknown")),
-      makeElement("p", "meta", "Format: " + (anime.format || "Unknown")),
-      makeElement("p", "meta", "Year: " + (anime.seasonYear || "Unknown")),
-      makeElement("p", "meta", "Genres: " + ((anime.genres || []).join(", ") || "Unknown"))
+      makeElement("h2", "", title),
+      makeElement(
+        "p",
+        "meta",
+        "Episodes: " + (anime.episodes ?? "Not listed")
+      ),
+      makeElement(
+        "p",
+        "meta",
+        "Format: " + (anime.format || "Unknown")
+      ),
+      makeElement(
+        "p",
+        "meta",
+        "Release year: " + (anime.seasonYear || "Unknown")
+      ),
+      makeElement(
+        "p",
+        "meta",
+        "Score: " +
+          (anime.averageScore
+            ? anime.averageScore / 10 + "/10"
+            : "Not rated")
+      ),
+      makeElement(
+        "p",
+        "meta",
+        "Status: " + (anime.status || "Unknown")
+      ),
+      makeElement(
+        "p",
+        "meta",
+        "Genres: " + ((anime.genres || []).join(", ") || "Not listed")
+      )
     );
 
     const link = makeElement("a", "external", "Open on AniList ↗");
-    link.href = anime.siteUrl;
+    link.href = anime.siteUrl || "https://anilist.co";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
+
     summary.append(link);
     top.append(img, summary);
     content.append(top);
 
     content.append(makeElement("h3", "", "Synopsis"));
-    content.append(makeElement("p", "description",
-      anime.description || "No synopsis available."));
+    content.append(
+      makeElement(
+        "p",
+        "description",
+        anime.description || "Synopsis not available."
+      )
+    );
 
     const relations = (anime.relations?.edges || []).filter(
       edge => edge.node?.type === "ANIME"
     );
 
-    content.append(makeElement("h3", "", "Related Anime / Seasons"));
+    content.append(
+      makeElement("h3", "", "Seasons & Related Anime")
+    );
+
     const related = makeElement("div", "related");
+
+    const relationNames = {
+      PREQUEL: "Previous story",
+      SEQUEL: "Next story / sequel",
+      PARENT: "Parent series",
+      SIDE_STORY: "Side story",
+      SPIN_OFF: "Spin-off",
+      ALTERNATIVE: "Alternative version",
+      SUMMARY: "Summary",
+      COMPILATION: "Compilation",
+      OTHER: "Related anime",
+      SOURCE: "Source material adaptation"
+    };
 
     if (relations.length) {
       relations.forEach(edge => {
         const item = makeElement("a", "relatedItem");
         item.href = "#";
-        item.addEventListener("click", e => {
-          e.preventDefault();
+
+        item.addEventListener("click", event => {
+          event.preventDefault();
           showDetails(edge.node.id);
         });
 
         const poster = makeElement("img");
         poster.loading = "lazy";
         poster.src = edge.node.coverImage?.large || "";
-        poster.alt = edge.node.title.english || edge.node.title.romaji || "Related anime";
+        poster.alt =
+          edge.node.title?.english ||
+          edge.node.title?.romaji ||
+          "Related anime";
+
+        const nodeTitle =
+          edge.node.title?.english ||
+          edge.node.title?.romaji ||
+          "Related anime";
+
+        const relation =
+          relationNames[edge.relationType] ||
+          edge.relationType.replaceAll("_", " ").toLowerCase();
+
+        const episodeCount =
+          edge.node.episodes == null
+            ? "Episodes: Not listed"
+            : "Episodes: " + edge.node.episodes;
 
         item.append(
           poster,
-          makeElement("span", "", (edge.node.title.english ||
-            edge.node.title.romaji || "Related anime") +
-            "\n" + edge.relationType.replaceAll("_", " "))
+          makeElement(
+            "span",
+            "",
+            nodeTitle +
+              "\n" + relation +
+              "\n" + (edge.node.format || "Format unknown") +
+              " • " + episodeCount
+          )
         );
+
         related.append(item);
       });
+
       content.append(related);
     } else {
-      content.append(makeElement("p", "meta",
-        "No related anime entries were listed for this title."));
+      content.append(
+        makeElement(
+          "p",
+          "meta",
+          "No related anime seasons or entries were listed by AniList."
+        )
+      );
     }
   } catch (error) {
     console.error(error);
-    content.replaceChildren(makeElement("p", "", "Could not load details. Please try again."));
+    content.replaceChildren(
+      makeElement(
+        "p",
+        "",
+        "Could not load details. Please try again."
+      )
+    );
   }
 }
+  
+  
 
 document.getElementById("searchForm").addEventListener("submit", event => {
   event.preventDefault();
