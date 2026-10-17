@@ -1,191 +1,110 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Zenith Anime</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#090b12;color:white;font-family:Arial,sans-serif}
-header{background:#151827;padding:18px;position:sticky;top:0;z-index:2}
-.logo{font-size:27px;font-weight:900;color:#a78bfa}
-.logo span{color:white}
-input{width:100%;padding:13px;margin-top:12px;background:#090b12;color:white;border:1px solid #38394c;border-radius:9px;font-size:16px}
-.hero{text-align:center;padding:30px 15px;background:linear-gradient(135deg,#381064,#101827)}
-main{padding:16px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.card,.playerbox{background:#171b29;border-radius:12px;overflow:hidden}
-.card img{width:100%;height:220px;object-fit:cover}
-.info{padding:10px}
-.info h3{font-size:15px;min-height:32px}
-.meta{font-size:12px;color:#c0c4d3;margin-bottom:10px}
-button{width:100%;padding:12px;margin:4px 0;border:0;border-radius:8px;background:#8b5cf6;color:white;font-weight:bold}
-.secondary{background:#30364b}
-.playerbox{padding:14px;margin-top:20px}
-iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:9px;background:#000}
-.small{font-size:13px;color:#c4c6d4;line-height:1.5}
-#status{text-align:center;padding:20px}
-footer{text-align:center;padding:24px;color:#999}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zenith Anime Player</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #080810;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    h1 { color: #00f5ff; }
+    .panel {
+      max-width: 850px;
+      margin: 20px auto;
+      padding: 18px;
+      background: #141421;
+      border: 1px solid #292943;
+      border-radius: 16px;
+    }
+    input, button {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input {
+      color: white;
+      background: #090912;
+      border: 1px solid #45455d;
+    }
+    button {
+      border: 0;
+      color: #080810;
+      background: #00f5ff;
+      font-weight: bold;
+    }
+    .player {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-top: 15px;
+      background: black;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .note { color: #b8b8c9; line-height: 1.5; }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">ZENITH <span>ANIME</span></div>
-  <input id="search" placeholder="Search anime...">
-</header>
-
-<section class="hero">
-  <h1>Anime Universe</h1>
-  <p>Discover anime and watch official videos.</p>
-  <button onclick="document.getElementById('playerSection').scrollIntoView({behavior:'smooth'})">
-    ▶ Open Muse Asia Player
-  </button>
-</section>
-
-<main>
-  <h2>🔥 Popular Anime</h2>
-  <div id="status">Loading anime...</div>
-  <div id="grid" class="grid"></div>
-
-  <section class="playerbox" id="playerSection">
-    <h2>🎬 Muse Asia Player</h2>
-    <p class="small">
-      Choose an official Muse Asia video. Videos must allow embedding.
+  <div class="panel">
+    <h1>ZENITH ANIME</h1>
+    <h2>Watch Anime</h2>
+    <p class="note">
+      Play officially available episodes from an embedded playlist.
     </p>
-    <button onclick="openMuse()">Browse Official Muse Asia Videos</button>
 
-    <label for="videoId">Official YouTube video ID</label>
-    <input id="videoId" placeholder="11-character video ID">
+    <label for="playlist">YouTube playlist ID</label>
+    <input id="playlist"
+      placeholder="Paste playlist ID here">
 
-    <button onclick="playVideo()">▶ Play in Zenith Anime</button>
+    <button onclick="loadPlaylist()">Load Episodes</button>
 
-    <iframe id="player"
-      src="about:blank"
-      title="YouTube video player"
-      allow="accelerometer; autoplay; encrypted-media; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen></iframe>
+    <div class="player" id="player">
+      <p class="note" style="padding:15px">
+        Your anime playlist will appear here.
+      </p>
+    </div>
 
-    <p id="playerStatus" class="small">
-      Select an embeddable official video to play here.
+    <p class="note">
+      Some videos may be unavailable for embedding or in your region.
     </p>
-  </section>
-</main>
+  </div>
 
-<footer>ZENITH ANIME · Official video discovery</footer>
+  <script>
+    function loadPlaylist() {
+      const id = document.getElementById("playlist")
+        .value.trim();
 
-<script>
-const query=`query {
- Page(page:1,perPage:30) {
-  media(type:ANIME,sort:POPULARITY_DESC,isAdult:false) {
-   id title { romaji english }
-   coverImage { large }
-   seasonYear episodes averageScore
-   description(asHtml:false)
-  }
- }
-}`;
+      // Accept only a YouTube playlist ID.
+      if (!/^PL[\w-]+$/.test(id)) {
+        alert("Enter a valid YouTube playlist ID.");
+        return;
+      }
 
-let animeList=[];
+      const frame = document.createElement("iframe");
+      frame.src =
+        "https://www.youtube-nocookie.com/embed/videoseries?list=" +
+        encodeURIComponent(id);
+      frame.title = "Zenith Anime playlist player";
+      frame.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      frame.allowFullscreen = true;
+      frame.referrerPolicy = "strict-origin-when-cross-origin";
 
-function esc(s=""){
- return String(s).replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-
-async function loadAnime(){
- try{
-  const res=await fetch("https://graphql.anilist.co",{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({query})
-  });
-  if(!res.ok)throw Error();
-  const data=await res.json();
-  animeList=data.data.Page.media;
-  document.getElementById("status").style.display="none";
-  render(animeList);
- }catch{
-  document.getElementById("status").textContent=
-   "Anime load nahi hua. Internet check karke refresh karo.";
- }
-}
-
-function render(list){
- const grid=document.getElementById("grid");
- if(!list.length){grid.innerHTML="<p>No anime found.</p>";return;}
-
- grid.innerHTML=list.map(a=>{
-  const title=a.title.english||a.title.romaji||"Anime";
-  return `<article class="card">
-   <img src="${esc(a.coverImage.large)}" alt="${esc(title)}" loading="lazy">
-   <div class="info">
-    <h3>${esc(title)}</h3>
-    <div class="meta">${a.seasonYear||"Year N/A"} · ⭐ ${
-      a.averageScore?(a.averageScore/10).toFixed(1):"N/A"
-    }</div>
-    <button onclick="findMuse(${a.id})">▶ Find on Muse Asia</button>
-    <button class="secondary" onclick="details(${a.id})">Anime Details</button>
-   </div>
-  </article>`;
- }).join("");
-}
-
-function openMuse(){
- window.open("https://www.youtube.com/@MuseAsia","_blank","noopener");
-}
-
-function findMuse(id){
- const a=animeList.find(x=>x.id===id);
- if(!a)return;
- const title=a.title.english||a.title.romaji;
- const search="Muse Asia "+title+" official";
- window.open(
-  "https://www.youtube.com/results?search_query="+encodeURIComponent(search),
-  "_blank","noopener"
- );
-}
-
-function details(id){
- const a=animeList.find(x=>x.id===id);
- if(!a)return;
- alert(
-  (a.title.english||a.title.romaji)+
-  "\nYear: "+(a.seasonYear||"Unknown")+
-  "\nEpisodes: "+(a.episodes||"Unknown")+
-  "\n\n"+(a.description||"No description available.")
-    .replace(/<[^>]*>/g," ").slice(0,600)
- );
-}
-
-function playVideo(){
- const id=document.getElementById("videoId").value.trim();
- const status=document.getElementById("playerStatus");
-
- if(!/^[\w-]{11}$/.test(id)){
-  status.textContent="Enter a valid 11-character YouTube video ID.";
-  return;
- }
-
- document.getElementById("player").src=
-  "https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id);
- status.textContent=
-  "Loading video. If embedding is disabled, watch it on YouTube.";
-}
-
-document.getElementById("search").addEventListener("input",e=>{
- const term=e.target.value.toLowerCase().trim();
- render(animeList.filter(a=>
-  ((a.title.english||"")+" "+(a.title.romaji||""))
-   .toLowerCase().includes(term)
- ));
-});
-
-loadAnime();
-</script>
+      const player = document.getElementById("player");
+      player.replaceChildren(frame);
+    }
+  </script>
 </body>
 </html>
