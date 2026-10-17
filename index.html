@@ -244,13 +244,13 @@ async function loadAnime(reset = true) {
     console.error(error);
     statusBox.textContent =
       "Could not load anime data. Check your internet and try again.";
-  } finally {
+    } finally {
     busy = false;
     moreButton.disabled = false;
     searchButton.disabled = false;
   }
+}
 
-  
 async function showDetails(id) {
   const overlay = document.getElementById("overlay");
   const content = document.getElementById("modalContent");
