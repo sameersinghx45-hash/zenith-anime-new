@@ -3,135 +3,512 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zenith Anime</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#0b0b12;color:#f5f5f7;font-family:Arial,sans-serif}
-header{padding:22px 16px;background:#151522;text-align:center;border-bottom:1px solid #29293c}
-h1{margin:0;color:#9b87ff;font-size:30px}
-header p{color:#b8b8ca;margin-bottom:0}
-main{max-width:1000px;margin:auto;padding:18px}
-input,select{width:100%;padding:13px;margin-bottom:12px;border-radius:10px;border:1px solid #38384c;background:#171725;color:white;font-size:16px}
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px}
-.card{background:#171725;border:1px solid #29293c;border-radius:14px;overflow:hidden;cursor:pointer}
-.poster{height:155px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:21px;font-weight:bold;background:linear-gradient(140deg,#36256c,#171725 65%,#5b285f)}
-.card h3{margin:12px 10px 5px}
-.card p{color:#b9b9ca;margin:0 10px 14px;font-size:13px}
-button{border:0;border-radius:9px;padding:11px 14px;background:#7860ef;color:white;font-weight:bold;cursor:pointer}
-.modal{display:none;position:fixed;inset:0;background:#000d;z-index:5;overflow:auto;padding:18px;align-items:center;justify-content:center}
-.panel{width:100%;max-width:650px;background:#171725;border:1px solid #38384c;border-radius:16px;padding:18px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.top h2{margin:8px 0}
-#close{background:#333348;font-size:18px}
-.player{position:relative;width:100%;aspect-ratio:16/9;margin-top:18px;background:#050508;border-radius:12px;overflow:hidden}
-.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.note{font-size:13px;color:#b9b9ca;line-height:1.5}
-footer{text-align:center;padding:25px;color:#9696a8;font-size:13px}
+:root {
+  --bg:#090b12;
+  --panel:#141824;
+  --text:#f5f6fb;
+  --muted:#a4acc0;
+  --accent:#8b5cf6;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+header {
+  padding:22px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  background:#10131d;
+  border-bottom:1px solid #262b3a;
+}
+.logo { font-size:25px; font-weight:900; }
+.logo span { color:var(--accent); }
+header small { color:var(--muted); }
+.hero { padding:35px 5% 20px; }
+.hero h1 { font-size:clamp(28px,5vw,46px); margin:0 0 12px; }
+.hero p { color:var(--muted); line-height:1.6; }
+.controls {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+input,select,button {
+  font:inherit;
+  border:1px solid #34394c;
+  border-radius:9px;
+  padding:12px;
+}
+input,select {
+  background:#151a27;
+  color:white;
+  min-width:0;
+}
+#search { flex:1; min-width:180px; }
+button {
+  background:var(--accent);
+  color:white;
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
+}
+button:hover { opacity:.88; }
+.section { padding:18px 5% 35px; }
+.section h2 { margin-bottom:18px; }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:16px;
+}
+.card {
+  background:var(--panel);
+  border:1px solid #272d40;
+  border-radius:13px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .2s,border-color .2s;
+}
+.card:hover { transform:translateY(-4px); border-color:var(--accent); }
+.poster {
+  height:155px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:48px;
+  background:linear-gradient(135deg,#27204c,#151c30,#3b1745);
+}
+.card-body { padding:12px; }
+.card h3 { font-size:16px; margin:0 0 8px; }
+.card p { font-size:12px; color:var(--muted); margin:0; }
+.player-section { padding:10px 5% 45px; }
+.player-box {
+  background:var(--panel);
+  border:1px solid #272d40;
+  border-radius:14px;
+  padding:16px;
+}
+.player-controls {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  margin:16px 0;
+}
+.player-controls label {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  color:var(--muted);
+  font-size:13px;
+}
+.player-controls select { width:100%; }
+.video {
+  width:100%;
+  aspect-ratio:16/9;
+  background:#050609;
+  border-radius:10px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.video iframe { width:100%; height:100%; border:0; }
+.placeholder {
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
+  line-height:1.7;
+}
+.placeholder strong { color:white; }
+.details { color:var(--muted); line-height:1.6; }
+.notice {
+  background:#201b35;
+  border:1px solid #49377a;
+  border-radius:10px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.6;
+  color:#ddd5ff;
+}
+footer {
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
+  border-top:1px solid #252a38;
+  font-size:12px;
+}
+.hidden { display:none; }
 </style>
 </head>
 <body>
+
 <header>
-<h1>ZENITH ANIME</h1>
-<p>Discover your next anime ✨</p>
+  <div class="logo">ZENITH <span>ANIME</span></div>
+  <small>Your anime discovery zone ✨</small>
 </header>
-<main>
-<input id="search" placeholder="Search anime..." aria-label="Search anime">
-<div class="filters">
-<select id="genre">
-<option value="All">All genres</option>
-<option>Action</option>
-<option>Fantasy</option>
-<option>Adventure</option>
-<option>Sports</option>
-</select>
-<select id="sort">
-<option value="az">Name: A–Z</option>
-<option value="new">Year: newest</option>
-</select>
-</div>
-<div id="grid" class="grid"></div>
-</main>
-<div id="modal" class="modal">
-<div class="panel">
-<div class="top">
-<h2 id="title"></h2>
-<button id="close" aria-label="Close">✕</button>
-</div>
-<div id="details"></div>
-<div id="playerArea"></div>
-<p class="note">Videos are embedded from YouTube. Availability depends on the video owner and YouTube's playback settings.</p>
-</div>
-</div>
-<footer>Zenith Anime • Fan discovery website</footer>
+
+<section class="hero">
+  <h1>Discover Your Next Anime</h1>
+  <p>Search anime, explore seasons and episodes, and watch available video previews.</p>
+  <div class="controls">
+    <input id="search" type="search" placeholder="Search anime...">
+    <select id="genreFilter" aria-label="Filter by genre">
+      <option value="All">All Genres</option>
+      <option value="Action">Action</option>
+      <option value="Fantasy">Fantasy</option>
+      <option value="Adventure">Adventure</option>
+      <option value="Sports">Sports</option>
+    </select>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Anime Library</h2>
+  <div id="grid" class="grid"></div>
+  <p id="noResults" class="details hidden">No anime found. Try another search.</p>
+</section>
+
+<section class="player-section" id="watch">
+  <h2 id="playerTitle">Choose an Anime</h2>
+  <div class="player-box">
+    <p id="animeDescription" class="details">
+      Select an anime card to see its available seasons and episodes.
+    </p>
+
+    <div class="player-controls">
+      <label>
+        Season
+        <select id="seasonSelect" disabled>
+          <option value="">Select anime first</option>
+        </select>
+      </label>
+      <label>
+        Episode
+        <select id="episodeSelect" disabled>
+          <option value="">Select a season first</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="video" id="videoArea">
+      <div class="placeholder">
+        <strong>▶ Zenith Anime Player</strong><br>
+        Select an anime to begin.
+      </div>
+    </div>
+
+    <p id="episodeInfo" class="details"></p>
+    <div class="notice">
+      Only authorized, embeddable videos can play here. The season and episode
+      entries below are sample catalogue entries; they do not mean full episodes
+      are already available. Add a verified video ID only when you have
+      permission to embed that video.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Zenith Anime · Anime discovery and authorized video previews
+</footer>
+
 <script>
+/*
+  IMPORTANT:
+  - Trailer IDs are preview examples from the existing site.
+  - Episode entries are sample placeholders, not verified episode listings.
+  - Keep episode videoId empty until you have an authorized embeddable video.
+*/
+
 const animeData = [
-{title:"Demon Slayer",genre:"Action",year:2019,season:"Multiple seasons",trailer:"Jd_B6ox3qGc",desc:"Tanjiro begins a journey to protect his sister and fight demons."},
-{title:"Solo Leveling",genre:"Fantasy",year:2024,season:"Multiple seasons",trailer:"Bca7dy1Hntc",desc:"Sung Jinwoo discovers a mysterious power."},
-{title:"Naruto",genre:"Action",year:2002,season:"Long-running series",trailer:"",desc:"A young ninja dreams of becoming Hokage."},
-{title:"One Piece",genre:"Adventure",year:1999,season:"Long-running series",trailer:"",desc:"Luffy and his crew search for legendary treasure."},
-{title:"Blue Lock",genre:"Sports",year:2022,season:"Multiple seasons",trailer:"scNHgkRlJn4",desc:"Strikers compete to become Japan's best striker."},
-{title:"Jujutsu Kaisen",genre:"Action",year:2020,season:"Multiple seasons",trailer:"qrEAcRQzzbA",desc:"Yuji enters the dangerous world of curses."}
+  {
+    id:"demon-slayer",
+    title:"Demon Slayer",
+    genre:"Action",
+    year:2019,
+    icon:"⚔️",
+    description:"Tanjiro begins a journey to protect his sister and fight demons.",
+    trailer:"Jd_B6ox3qGc",
+    seasons:[
+      {name:"Season 1 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""},
+        {name:"Episode 3",videoId:""}
+      ]},
+      {name:"Season 2 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""}
+      ]}
+    ]
+  },
+  {
+    id:"solo-leveling",
+    title:"Solo Leveling",
+    genre:"Fantasy",
+    year:2024,
+    icon:"⚡",
+    description:"Sung Jinwoo discovers a mysterious power.",
+    trailer:"Bca7dy1Hntc",
+    seasons:[
+      {name:"Season 1 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""},
+        {name:"Episode 3",videoId:""}
+      ]},
+      {name:"Season 2 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""}
+      ]}
+    ]
+  },
+  {
+    id:"naruto",
+    title:"Naruto",
+    genre:"Action",
+    year:2002,
+    icon:"🍥",
+    description:"A young ninja dreams of becoming Hokage.",
+    trailer:"",
+    seasons:[
+      {name:"Season 1 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""},
+        {name:"Episode 3",videoId:""}
+      ]}
+    ]
+  },
+  {
+    id:"one-piece",
+    title:"One Piece",
+    genre:"Adventure",
+    year:1999,
+    icon:"🏴‍☠️",
+    description:"Luffy and his crew search for legendary treasure.",
+    trailer:"",
+    seasons:[
+      {name:"Season 1 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""},
+        {name:"Episode 3",videoId:""}
+      ]}
+    ]
+  },
+  {
+    id:"blue-lock",
+    title:"Blue Lock",
+    genre:"Sports",
+    year:2022,
+    icon:"⚽",
+    description:"Strikers compete to become Japan's best striker.",
+    trailer:"scNHgkRlJn4",
+    seasons:[
+      {name:"Season 1 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""},
+        {name:"Episode 3",videoId:""}
+      ]}
+    ]
+  },
+  {
+    id:"jujutsu-kaisen",
+    title:"Jujutsu Kaisen",
+    genre:"Action",
+    year:2020,
+    icon:"👊",
+    description:"Yuji enters the dangerous world of curses.",
+    trailer:"qrEAcRQzzbA",
+    seasons:[
+      {name:"Season 1 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""},
+        {name:"Episode 3",videoId:""}
+      ]},
+      {name:"Season 2 (sample entries)",episodes:[
+        {name:"Episode 1",videoId:""},
+        {name:"Episode 2",videoId:""}
+      ]}
+    ]
+  }
 ];
 
-const grid=document.getElementById("grid");
-const search=document.getElementById("search");
-const genre=document.getElementById("genre");
-const sort=document.getElementById("sort");
-const modal=document.getElementById("modal");
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+const genreFilter = document.getElementById("genreFilter");
+const playerTitle = document.getElementById("playerTitle");
+const animeDescription = document.getElementById("animeDescription");
+const seasonSelect = document.getElementById("seasonSelect");
+const episodeSelect = document.getElementById("episodeSelect");
+const videoArea = document.getElementById("videoArea");
+const episodeInfo = document.getElementById("episodeInfo");
+const noResults = document.getElementById("noResults");
 
-function render(){
- let items=animeData.filter(a=>
-  a.title.toLowerCase().includes(search.value.toLowerCase()) &&
-  (genre.value==="All"||a.genre===genre.value)
- );
- if(sort.value==="az")items.sort((a,b)=>a.title.localeCompare(b.title));
- else items.sort((a,b)=>b.year-a.year);
- grid.innerHTML=items.map(a=>`
-  <article class="card" data-title="${a.title}">
-   <div class="poster">${a.title}</div>
-   <h3>${a.title}</h3>
-   <p>${a.genre} • ${a.year}</p>
-  </article>
- `).join("");
+let selectedAnime = null;
+
+function renderAnime() {
+  const term = search.value.trim().toLowerCase();
+  const genre = genreFilter.value;
+
+  const results = animeData.filter(anime =>
+    anime.title.toLowerCase().includes(term) &&
+    (genre === "All" || anime.genre === genre)
+  );
+
+  grid.innerHTML = results.map(anime => `
+    <article class="card" tabindex="0" role="button"
+      data-anime-id="${anime.id}"
+      aria-label="Open ${anime.title}">
+      <div class="poster">${anime.icon}</div>
+      <div class="card-body">
+        <h3>${anime.title}</h3>
+        <p>${anime.genre} · ${anime.year}</p>
+      </div>
+    </article>
+  `).join("");
+
+  noResults.classList.toggle("hidden", results.length !== 0);
 }
-search.addEventListener("input",render);
-genre.addEventListener("change",render);
-sort.addEventListener("change",render);
 
-grid.addEventListener("click",event=>{
- const card=event.target.closest(".card");
- if(!card)return;
- const anime=animeData.find(a=>a.title===card.dataset.title);
- document.getElementById("title").textContent=anime.title;
- document.getElementById("details").innerHTML=
-  `<p><strong>Genre:</strong> ${anime.genre}<br>
-  <strong>Year:</strong> ${anime.year}<br>
-  <strong>Series:</strong> ${anime.season}</p>
-  <p>${anime.desc}</p>`;
- document.getElementById("playerArea").innerHTML=anime.trailer
-  ? `<div class="player"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(anime.trailer)}" title="${anime.title} trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
-  : `<p class="note">Trailer has not been added yet.</p>`;
- modal.style.display="flex";
+function showMessage(message) {
+  videoArea.innerHTML = `
+    <div class="placeholder">${message}</div>
+  `;
+}
+
+function loadEpisode() {
+  if (!selectedAnime) return;
+
+  const seasonIndex = Number(seasonSelect.value);
+  const season = selectedAnime.seasons[seasonIndex];
+
+  if (!season) {
+    showMessage("Choose a season and episode.");
+    return;
+  }
+
+  const episodeIndex = Number(episodeSelect.value);
+  const episode = season.episodes[episodeIndex];
+
+  if (!episode) {
+    showMessage("Choose an episode.");
+    return;
+  }
+
+  episodeInfo.textContent = season.name + " · " + episode.name;
+
+  if (episode.videoId) {
+    videoArea.innerHTML = `
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(episode.videoId)}"
+        title="${selectedAnime.title} - ${episode.name}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    `;
+  } else {
+    showMessage(
+      "<strong>" + episode.name + "</strong><br>" +
+      "Abhi is episode ka authorized video add nahi hai.<br>" +
+      "YouTube preview dekhne ke liye neeche button use karo."
+    );
+    addPreviewButton();
+  }
+}
+
+function addPreviewButton() {
+  if (!selectedAnime || !selectedAnime.trailer) return;
+
+  const button = document.createElement("button");
+  button.textContent = "▶ Watch available preview";
+  button.style.margin = "0 0 12px 0";
+  button.addEventListener("click", () => {
+    videoArea.innerHTML = `
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedAnime.trailer)}"
+        title="${selectedAnime.title} preview"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    `;
+    episodeInfo.textContent = selectedAnime.title + " · Preview";
+  });
+  videoArea.insertAdjacentElement("afterend", button);
+  button.id = "previewButton";
+}
+
+function clearPreviewButton() {
+  const oldButton = document.getElementById("previewButton");
+  if (oldButton) oldButton.remove();
+}
+
+function openAnime(anime) {
+  selectedAnime = anime;
+  clearPreviewButton();
+
+  playerTitle.textContent = anime.title;
+  animeDescription.textContent =
+    anime.description + " Genre: " + anime.genre + ". Year: " + anime.year + ".";
+
+  seasonSelect.innerHTML = anime.seasons.map((season, index) =>
+    `<option value="${index}">${season.name}</option>`
+  ).join("");
+  seasonSelect.disabled = false;
+
+  updateEpisodes();
+  document.getElementById("watch").scrollIntoView({behavior:"smooth"});
+}
+
+function updateEpisodes() {
+  if (!selectedAnime) return;
+
+  clearPreviewButton();
+  const season = selectedAnime.seasons[Number(seasonSelect.value)];
+
+  episodeSelect.innerHTML = season.episodes.map((episode, index) =>
+    `<option value="${index}">${episode.name}</option>`
+  ).join("");
+  episodeSelect.disabled = false;
+
+  loadEpisode();
+}
+
+grid.addEventListener("click", event => {
+  const card = event.target.closest(".card");
+  if (!card) return;
+
+  const anime = animeData.find(a => a.id === card.dataset.animeId);
+  if (anime) openAnime(anime);
 });
-document.getElementById("close").addEventListener("click",()=>{
- modal.style.display="none";
- document.getElementById("playerArea").innerHTML="";
+
+grid.addEventListener("keydown", event => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const card = event.target.closest(".card");
+  if (!card) return;
+
+  event.preventDefault();
+  const anime = animeData.find(a => a.id === card.dataset.animeId);
+  if (anime) openAnime(anime);
 });
-modal.addEventListener("click",event=>{
- if(event.target===modal){
-  modal.style.display="none";
-  document.getElementById("playerArea").innerHTML="";
- }
+
+seasonSelect.addEventListener("change", updateEpisodes);
+
+episodeSelect.addEventListener("change", () => {
+  clearPreviewButton();
+  loadEpisode();
 });
-document.addEventListener("keydown",event=>{
- if(event.key==="Escape"){
-  modal.style.display="none";
-  document.getElementById("playerArea").innerHTML="";
- }
-});
-render();
+
+search.addEventListener("input", renderAnime);
+genreFilter.addEventListener("change", renderAnime);
+
+renderAnime();
 </script>
 </body>
 </html>
