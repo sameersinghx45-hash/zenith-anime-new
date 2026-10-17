@@ -1,169 +1,544 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rambo Anime - Watch Free Anime Online</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            line-height: 1.6;
-        }
-        header {
-            background-color: #1f1f1f;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #e50914;
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e50914;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        nav a {
-            color: #ffffff;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-        nav a:hover {
-            color: #e50914;
-        }
-        .hero {
-            padding: 60px 40px;
-            text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-        }
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #ffffff;
-        }
-        .hero p {
-            font-size: 18px;
-            color: #b3b3b3;
-            margin-bottom: 30px;
-        }
-        .container {
-            padding: 40px;
-        }
-        .section-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            border-left: 4px solid #e50914;
-            padding-left: 10px;
-        }
-        .anime-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .anime-card {
-            background-color: #1f1f1f;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-        .anime-card:hover {
-            transform: scale(1.05);
-        }
-        .anime-poster {
-            width: 100%;
-            height: 280px;
-            background-color: #333;
-            object-fit: cover;
-        }
-        .anime-info {
-            padding: 15px;
-        }
-        .anime-title {
-            font-size: 16px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .anime-episodes {
-            font-size: 14px;
-            color: #b3b3b3;
-            margin-top: 5px;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #1f1f1f;
-            color: #777;
-            margin-top: 40px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b14">
+<meta name="description" content="Rambo Anime - discover anime, posters, ratings, seasons and official trailers.">
+<title>Rambo Anime</title>
+
+<style>
+:root {
+  --bg:#080b14; --panel:#121827; --panel2:#1b2335;
+  --text:#f5f7ff; --muted:#a6afc4; --purple:#8b5cf6;
+  --cyan:#22d3ee; --border:#293147;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:radial-gradient(ellipse at top,#201443 0,transparent 40%),var(--bg);
+  color:var(--text); font-family:Arial,Helvetica,sans-serif;
+}
+button,input,select { font:inherit; }
+button,a { -webkit-tap-highlight-color:transparent; }
+button { cursor:pointer; }
+a { color:inherit; text-decoration:none; }
+header {
+  position:sticky;top:0;z-index:5;background:#080b14ed;
+  backdrop-filter:blur(15px);border-bottom:1px solid var(--border);
+}
+.nav {
+  max-width:1200px;margin:auto;padding:16px 20px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.logo { font-size:22px;font-weight:900;letter-spacing:1px; }
+.logo span { color:var(--cyan); }
+.tagline { color:var(--muted);font-size:13px; }
+.container { max-width:1200px;margin:auto;padding:20px; }
+.hero {
+  padding:48px 0 28px;
+  background:radial-gradient(ellipse at 15% 40%,#6529b52b,transparent 55%);
+}
+.eyebrow { color:var(--cyan);font-size:12px;font-weight:bold;letter-spacing:3px; }
+h1 { font-size:clamp(36px,7vw,65px);line-height:1.05;margin:14px 0; }
+.gradient {
+  background:linear-gradient(90deg,#c4b5fd,#22d3ee);
+  color:transparent;background-clip:text;
+}
+.hero p { color:var(--muted);line-height:1.7;max-width:650px; }
+.search {
+  display:flex;gap:10px;margin:22px 0;max-width:760px;
+}
+.search input {
+  min-width:0;flex:1;background:var(--panel);color:white;
+  border:1px solid var(--border);border-radius:12px;padding:15px;
+  outline:none;
+}
+.search input:focus { border-color:var(--purple); }
+.btn {
+  padding:12px 17px;border:0;border-radius:11px;
+  background:linear-gradient(135deg,var(--purple),#6d28d9);
+  color:white;font-weight:bold;display:inline-flex;
+  align-items:center;justify-content:center;gap:7px;
+}
+.btn:disabled { opacity:.4;cursor:not-allowed; }
+.btn.secondary { background:var(--panel2);border:1px solid var(--border); }
+.filters { display:flex;flex-wrap:wrap;gap:8px;margin:20px 0; }
+.chip {
+  padding:9px 14px;border:1px solid var(--border);border-radius:30px;
+  background:var(--panel);color:var(--muted);
+}
+.chip.active { background:#6d28d955;color:white;border-color:var(--purple); }
+select {
+  padding:10px;background:var(--panel);color:white;
+  border:1px solid var(--border);border-radius:10px;
+}
+.section-title {
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;margin:28px 0 16px;
+}
+.section-title h2 { margin:0;font-size:23px; }
+#status { color:var(--muted);font-size:14px;margin:12px 0; }
+.grid {
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:17px;
+}
+.card {
+  overflow:hidden;background:var(--panel);border:1px solid var(--border);
+  border-radius:15px;cursor:pointer;transition:transform .2s,border-color .2s;
+}
+.card:hover { transform:translateY(-4px);border-color:var(--purple); }
+.poster-wrap { position:relative;aspect-ratio:3/4.2;background:var(--panel2); }
+.poster { width:100%;height:100%;object-fit:cover;display:block; }
+.score {
+  position:absolute;top:9px;left:9px;padding:6px 8px;
+  background:#080b14e8;border-radius:8px;font-size:12px;font-weight:bold;
+}
+.card-info { padding:11px; }
+.card h3 {
+  font-size:14px;line-height:1.4;margin:0 0 8px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.meta { display:flex;justify-content:space-between;gap:5px;color:var(--muted);font-size:11px; }
+.empty { grid-column:1/-1;text-align:center;color:var(--muted);padding:35px 12px; }
+.pagination { display:flex;justify-content:center;gap:10px;margin:25px 0 50px; }
+footer { border-top:1px solid var(--border);padding:25px 20px;color:var(--muted);font-size:13px;line-height:1.8; }
+footer a { color:#c4b5fd; }
+.modal {
+  display:none;position:fixed;inset:0;z-index:10;background:#000c;
+  align-items:center;justify-content:center;padding:12px;
+}
+.modal.open { display:flex; }
+.modal-box {
+  width:min(850px,100%);max-height:94vh;overflow:auto;
+  background:#101522;border:1px solid var(--border);border-radius:18px;
+}
+.modal-head {
+  position:sticky;top:0;z-index:2;background:#101522ed;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.modal-head strong { font-size:17px; }
+.close { background:var(--panel2);border:1px solid var(--border);color:white;border-radius:9px;padding:8px 13px;font-size:20px; }
+.details { display:grid;grid-template-columns:180px 1fr;gap:20px;padding:20px; }
+.detail-poster { width:100%;border-radius:12px; }
+.details h2 { margin:0 0 12px;font-size:26px;line-height:1.2; }
+.detail-meta { color:var(--muted);font-size:13px;line-height:1.9; }
+.description { color:#d5d9e6;font-size:14px;line-height:1.8;white-space:pre-line; }
+.actions { display:flex;gap:8px;flex-wrap:wrap;margin:16px 0; }
+.block-title { font-size:17px;margin:20px 0 10px; }
+.pills { display:flex;gap:8px;flex-wrap:wrap; }
+.pill { padding:9px 12px;border-radius:9px;border:1px solid var(--border);background:var(--panel2);color:white; }
+.note { padding:12px;border:1px solid #164e63;background:#08334455;border-radius:10px;color:#b9f4ff;font-size:13px;line-height:1.7; }
+.player { width:100%;aspect-ratio:16/9;background:#030407;border-radius:12px;margin-top:12px;overflow:hidden; }
+.player video { width:100%;height:100%; }
+.player-empty { height:100%;display:grid;place-items:center;text-align:center;padding:18px;color:var(--muted);line-height:1.7; }
+@media(max-width:950px) { .grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media(max-width:650px) {
+  .container { padding:14px; }
+  .nav { padding:14px; }
+  .tagline { display:none; }
+  .hero { padding-top:30px; }
+  .grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:11px; }
+  .card-info { padding:9px; }
+  .details { grid-template-columns:95px 1fr;gap:12px;padding:13px; }
+  .details h2 { font-size:19px; }
+  .description { grid-column:1/-1; }
+  .search .btn { padding:12px; }
+}
+</style>
 </head>
+
 <body>
+<header>
+  <div class="nav">
+    <a href="#" class="logo">⚡ RAMBO <span>ANIME</span></a>
+    <div class="tagline">Discover your next anime</div>
+  </div>
+</header>
 
-    <header>
-        <div class="logo">Rambo Anime</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Anime List</a>
-            <a href="#">Genres</a>
-            <a href="#">Movies</a>
-        </nav>
-    </header>
+<main class="container">
+  <section class="hero">
+    <div class="eyebrow">YOUR ANIME UNIVERSE</div>
+    <h1>Enter the world of<br><span class="gradient">Anime.</span></h1>
+    <p>Explore anime posters, ratings, story details, related seasons and official trailers — all in one place.</p>
+  </section>
 
-    <section class="hero">
-        <h1>Welcome to Rambo Anime</h1>
-        <p>Watch your favorite anime series and movies in HD completely free!</p>
-    </section>
+  <form class="search" id="searchForm">
+    <input id="searchInput" type="search" placeholder="Search Naruto, Demon Slayer, One Piece..." aria-label="Search anime">
+    <button class="btn" type="submit">🔍 Search</button>
+  </form>
 
-    <div class="container">
-        <h2 class="section-title">Trending Anime</h2>
-        <div class="anime-grid">
-            <div class="anime-card">
-                <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=500&q=80" alt="Anime Poster" class="anime-poster">
-                <div class="anime-info">
-                    <div class="anime-title">Jujutsu Kaisen</div>
-                    <div class="anime-episodes">Season 2 • Ep 23</div>
-                </div>
-            </div>
-            <div class="anime-card">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80" alt="Anime Poster" class="anime-poster">
-                <div class="anime-info">
-                    <div class="anime-title">Demon Slayer</div>
-                    <div class="anime-episodes">Season 3 • Ep 11</div>
-                </div>
-            </div>
-            <div class="anime-card">
-                <img src="https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=500&q=80" alt="Anime Poster" class="anime-poster">
-                <div class="anime-info">
-                    <div class="anime-title">Attack on Titan</div>
-                    <div class="anime-episodes">Final Season • Ep 28</div>
-                </div>
-            </div>
-            <div class="anime-card">
-                <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=500&q=80" alt="Anime Poster" class="anime-poster">
-                <div class="anime-info">
-                    <div class="anime-title">One Piece</div>
-                    <div class="anime-episodes">Ongoing • Ep 1100+</div>
-                </div>
-            </div>
-        </div>
+  <div class="filters" id="genres">
+    <button class="chip active" data-genre="ALL" type="button">All</button>
+    <button class="chip" data-genre="Action" type="button">Action</button>
+    <button class="chip" data-genre="Adventure" type="button">Adventure</button>
+    <button class="chip" data-genre="Fantasy" type="button">Fantasy</button>
+    <button class="chip" data-genre="Comedy" type="button">Comedy</button>
+    <button class="chip" data-genre="Drama" type="button">Drama</button>
+    <button class="chip" data-genre="Romance" type="button">Romance</button>
+    <select id="sortSelect" aria-label="Sort anime">
+      <option value="POPULARITY_DESC">Most popular</option>
+      <option value="SCORE_DESC">Highest rated</option>
+      <option value="TRENDING_DESC">Trending</option>
+      <option value="START_DATE_DESC">Newest</option>
+    </select>
+  </div>
+
+  <section>
+    <div class="section-title"><h2>🔥 Explore Anime</h2></div>
+    <div id="status" role="status">Connecting to anime catalogue...</div>
+    <div class="grid" id="animeGrid"></div>
+    <div class="pagination">
+      <button class="btn secondary" id="prevBtn" disabled>← Previous</button>
+      <button class="btn secondary" id="nextBtn" disabled>Next →</button>
     </div>
+  </section>
+</main>
 
-    <footer>
-        <p>&copy; 2026 Rambo Anime. All rights reserved. Made for anime fans.</p>
-    </footer>
+<footer>
+  <div class="container">
+    <strong>⚡ RAMBO ANIME</strong><br>
+    Anime information powered by <a href="https://anilist.co/" target="_blank" rel="noopener noreferrer">AniList</a>.<br>
+    Posters and artwork belong to their respective owners. This site does not host anime episodes.
+  </div>
+</footer>
 
-</body>
-</html>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-head">
+      <strong id="modalTitle">Anime Details</strong>
+      <button class="close" id="closeModal" aria-label="Close" type="button">×</button>
+    </div>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const API = "https://graphql.anilist.co";
+const state = {
+  page: 1, perPage: 20, search: "", genre: "ALL",
+  sort: "POPULARITY_DESC", loading: false, hasNext: false
+};
+
+const grid = document.getElementById("animeGrid");
+const statusEl = document.getElementById("status");
+const modal = document.getElementById("modal");
+const detailContent = document.getElementById("detailContent");
+
+const LIST_QUERY = `
+query ($page:Int,$perPage:Int,$search:String,$genre:String,$sort:[MediaSort]) {
+  Page(page:$page,perPage:$perPage) {
+    pageInfo { hasNextPage }
+    media(type:ANIME,search:$search,genre:$genre,sort:$sort,isAdult:false) {
+      id
+      title { romaji english }
+      coverImage { extraLarge large medium }
+      averageScore
+      episodes
+      seasonYear
+      format
+      status
+      genres
+    }
+  }
+}`;
+
+const DETAIL_QUERY = `
+query ($id:Int) {
+  Media(id:$id,type:ANIME) {
+    id
+    title { romaji english native }
+    description(asHtml:false)
+    coverImage { extraLarge large medium }
+    averageScore
+    popularity
+    episodes
+    season
+    seasonYear
+    format
+    status
+    duration
+    genres
+    studios(isMain:true) { nodes { name } }
+    trailer { id site }
+    siteUrl
+    relations {
+      edges {
+        relationType
+        node {
+          id type format
+          title { romaji english }
+          coverImage { medium }
+        }
+      }
+    }
+  }
+}`;
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[c]);
+}
+
+async function request(query, variables) {
+  const response = await fetch(API, {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Accept":"application/json"
+    },
+    body:JSON.stringify({query,variables})
+  });
+
+  const result = await response.json();
+  if (!response.ok || result.errors?.length) {
+    throw new Error(result.errors?.[0]?.message || "Could not connect to AniList.");
+  }
+  return result.data;
+}
+
+function titleOf(anime) {
+  return anime.title?.english || anime.title?.romaji || "Untitled Anime";
+}
+
+function posterOf(anime) {
+  return anime.coverImage?.extraLarge || anime.coverImage?.large ||
+    anime.coverImage?.medium || "";
+}
+
+function cardHTML(anime) {
+  const title = titleOf(anime);
+  const poster = posterOf(anime);
+  const score = anime.averageScore ? (anime.averageScore / 10).toFixed(1) : "N/A";
+
+  return `
+  <article class="card" tabindex="0" role="button" data-id="${anime.id}" aria-label="Details for ${safe(title)}">
+    <div class="poster-wrap">
+      ${poster
+        ? `<img class="poster" src="${safe(poster)}" alt="${safe(title)} poster" loading="lazy">`
+        : `<div class="player-empty">No poster</div>`}
+      <span class="score">⭐ ${safe(score)}</span>
+    </div>
+    <div class="card-info">
+      <h3>${safe(title)}</h3>
+      <div class="meta"><span>${safe(anime.seasonYear || "Unknown")}</span><span>${safe(anime.format || "Anime")}</span></div>
+    </div>
+  </article>`;
+}
+
+async function loadAnime() {
+  if (state.loading) return;
+  state.loading = true;
+  statusEl.textContent = "Loading anime...";
+  grid.innerHTML = '<div class="empty">Please wait...</div>';
+  document.getElementById("prevBtn").disabled = state.page <= 1;
+  document.getElementById("nextBtn").disabled = true;
+
+  try {
+    const variables = {
+      page:state.page,
+      perPage:state.perPage,
+      search:state.search || undefined,
+      genre:state.genre === "ALL" ? undefined : state.genre,
+      sort:[state.sort]
+    };
+    const data = await request(LIST_QUERY, variables);
+    const pageData = data.Page;
+    const list = pageData.media || [];
+    state.hasNext = pageData.pageInfo.hasNextPage;
+
+    grid.innerHTML = list.length
+      ? list.map(cardHTML).join("")
+      : '<div class="empty">No anime found. Try another search.</div>';
+
+    statusEl.textContent = list.length
+      ? `Showing ${list.length} anime · Page ${state.page}`
+      : "No results found.";
+
+    document.getElementById("prevBtn").disabled = state.page <= 1;
+    document.getElementById("nextBtn").disabled = !state.hasNext;
+  } catch (error) {
+    console.error(error);
+    grid.innerHTML = '<div class="empty">The catalogue could not be loaded.</div>';
+    statusEl.textContent = error.message || "Connection error. Try again later.";
+  } finally {
+    state.loading = false;
+  }
+}
+
+function openModal() {
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function trailerURL(trailer) {
+  if (!trailer?.id || !trailer?.site) return "";
+  if (trailer.site.toLowerCase() === "youtube") {
+    return "https://www.youtube.com/watch?v=" + encodeURIComponent(trailer.id);
+  }
+  if (trailer.site.toLowerCase() === "dailymotion") {
+    return "https://www.dailymotion.com/video/" + encodeURIComponent(trailer.id);
+  }
+  return "";
+}
+
+/*
+  Add only video URLs you own or are authorized to stream.
+
+  Example:
+  const AUTHORIZED_EPISODES = {
+    "ANILIST_ID": [
+      {
+        season: 1,
+        episode: 1,
+        title: "Episode 1",
+        url: "https://your-authorized-host.example/video.mp4"
+      }
+    ]
+  };
+*/
+const AUTHORIZED_EPISODES = {};
+
+function episodeSection(anime) {
+  const episodes = AUTHORIZED_EPISODES[String(anime.id)] || [];
+
+  if (!episodes.length) {
+    return `
+      <h3 class="block-title">🎬 Seasons & Episodes</h3>
+      <div class="note">
+        AniList provides anime information, not full episode videos.
+        No authorized episode links have been added for this title.
+        Add your authorized video URLs in the AUTHORIZED_EPISODES object
+        inside this file to enable playback.
+      </div>
+      <div class="player">
+        <div class="player-empty">▶️<br>Authorized episode player<br>Waiting for a video source.</div>
+      </div>`;
+  }
+
+  const seasons = [...new Set(episodes.map(e => Number(e.season) || 1))];
+  return `
+    <h3 class="block-title">🎬 Seasons & Episodes</h3>
+    <div class="pills" id="seasonButtons">
+      ${seasons.map(s => `<button class="pill" type="button" data-season="${s}">Season ${s}</button>`).join("")}
+    </div>
+    <div class="pills" id="episodeButtons" style="margin-top:10px"></div>
+    <div class="player" id="videoPlayer">
+      <div class="player-empty">Select an authorized episode to play.</div>
+    </div>`;
+}
+
+function showEpisodeList(anime, season) {
+  const episodes = AUTHORIZED_EPISODES[String(anime.id)] || [];
+  const list = document.getElementById("episodeButtons");
+  if (!list) return;
+
+  list.innerHTML = episodes.map((e,i) => ({e,i}))
+    .filter(x => (Number(x.e.season) || 1) === season)
+    .map(({e,i}) => `<button class="pill" type="button" data-episode="${i}">
+      Episode ${safe(e.episode)}: ${safe(e.title || "Episode")}
+    </button>`).join("");
+
+  list.querySelectorAll("[data-episode]").forEach(button => {
+    button.addEventListener("click", () => playEpisode(anime, Number(button.dataset.episode)));
+  });
+}
+
+function playEpisode(anime, index) {
+  const episodes = AUTHORIZED_EPISODES[String(anime.id)] || [];
+  const episode = episodes[index];
+  if (!episode) return;
+
+  let url;
+  try {
+    url = new URL(episode.url);
+    if (!["https:","http:"].includes(url.protocol)) throw new Error("Invalid URL");
+  } catch (_) {
+    alert("Please check the authorized video URL in the code.");
+    return;
+  }
+
+  const player = document.getElementById("videoPlayer");
+  if (!player) return;
+
+  player.innerHTML = `<video controls playsinline preload="metadata" src="${safe(url.href)}"></video>`;
+}
+
+async function showDetails(id) {
+  detailContent.innerHTML = '<div class="empty">Loading details...</div>';
+  document.getElementById("modalTitle").textContent = "Anime Details";
+  openModal();
+
+  try {
+    const data = await request(DETAIL_QUERY, {id:Number(id)});
+    const anime = data.Media;
+    if (!anime) throw new Error("Anime not found.");
+
+    const title = titleOf(anime);
+    const poster = posterOf(anime);
+    const description = anime.description || "No description available.";
+    const studios = (anime.studios?.nodes || []).map(s => s.name).join(", ") || "Not listed";
+    const trailer = trailerURL(anime.trailer);
+
+    const related = (anime.relations?.edges || [])
+      .filter(edge => edge.node?.type === "ANIME" &&
+        ["PREQUEL","SEQUEL","SIDE_STORY","ALTERNATIVE"].includes(edge.relationType));
+
+    const relatedHTML = related.length
+      ? related.slice(0,10).map(edge => `
+        <button class="pill" type="button" data-related="${edge.node.id}">
+          ${safe(edge.node.title?.english || edge.node.title?.romaji || "Related Anime")}
+          · ${safe(edge.relationType.replaceAll("_"," "))}
+        </button>`).join("")
+      : '<span class="detail-meta">No related anime listed.</span>';
+
+    detailContent.innerHTML = `
+      <div class="details">
+        <div>${poster ? `<img class="detail-poster" src="${safe(poster)}" alt="${safe(title)} poster">` : ""}</div>
+        <div>
+          <h2>${safe(title)}</h2>
+          <div class="detail-meta">
+            ⭐ ${anime.averageScore ? (anime.averageScore/10).toFixed(1)+"/10" : "Not rated"}<br>
+            Year: ${safe(anime.seasonYear || "Unknown")}<br>
+            Format: ${safe(anime.format || "Unknown")}<br>
+            Status: ${safe(anime.status || "Unknown")}<br>
+            Episodes listed: ${safe(anime.episodes || "Unknown")}<br>
+            Studio: ${safe(studios)}<br>
+            Genres: ${safe((anime.genres || []).join(", ") || "Not listed")}
+          </div>
+          <p class="description">${safe(description)}</p>
+          <div class="actions">
+            ${trailer ? `<a class="btn" href="${safe(trailer)}" target="_blank" rel="noopener noreferrer">▶ Official trailer</a>` : ""}
+            ${anime.siteUrl ? `<a class="btn secondary" href="${safe(anime.siteUrl)}" target="_blank" rel="noopener noreferrer">AniList page ↗</a>` : ""}
+          </div>
+        </div>
+        <div class="description">
+          <h3 class="block-title">Related seasons & anime</h3>
+          <div class="pills">${relatedHTML}</div>
+          <p class="detail-meta">Related seasons may appear as separate anime entries.</p>
+        </div>
+        <div>${episodeSection(anime)}</div>
+      </div>`;
+
+    detailContent.querySelectorAll("[data-related]").forEach(button => {
+      button.addEventListener("click", () => showDetails(button.dataset.related));
+    });
+
+    detailContent.querySelectorAll("[data-season]").forEach(button => {
+      button.addEventListener("click", () => showEpisodeList(anime, Number(button.dataset.season)));
+    });
+
+    const firstSeason = [...new Set((AUTHORIZED_EPISODES[String(anime.id)] || [])
+      .map(e => Number(e.season) || 1))].sort((a,b) => a-b)[0];
+
+    if (firstSeason) showEpisodeList(anime, firstSeason);
+  } catch (error) {
+    console.error(e
