@@ -101,20 +101,23 @@ const episodes=document.getElementById("episodes");
 let page=1, term="", sort="TRENDING_DESC";
 let busy=false, hasNext=false, timer;
 
-function officialSources(anime){
- const name=[
-  anime.title.english||"",
-  anime.title.romaji||""
- ].join(" ").toLowerCase();
+function officialSources(anime) {
+  const titles = [
+    anime.title.english || "",
+    anime.title.romaji || ""
+  ].join(" ").toLowerCase();
 
- // Official Gundam playlist announced by Gundam's website.
- if(name.includes("unicorn") && name.includes("0096")){
-  return [{
-   label:"Official episode playlist",
-   playlist:"PLAKqAsKfNksU"
-  }];
- }
- return [];
+  if (
+    titles.includes("unicorn") &&
+    (titles.includes("0096") || titles.includes("re:0096"))
+  ) {
+    return [{
+      label: "Official episode playlist",
+      playlist: "PLAKqAsKfNksU"
+    }];
+  }
+
+  return [];
 }
 
 async function load(reset=true){
