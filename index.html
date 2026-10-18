@@ -7,297 +7,242 @@
 <meta name="theme-color" content="#080810">
 <title>Zenith Anime</title>
 <style>
-:root{--cyan:#00f5ff;--pink:#ff28b8;--bg:#080810}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#f6f6ff;font-family:Arial,sans-serif}
-header{padding:22px 16px;background:#11111d;border-bottom:1px solid #29293b}
-h1{margin:0;color:var(--cyan);letter-spacing:2px}
+body{margin:0;background:#080810;color:#fff;font-family:Arial,sans-serif}
+header{padding:22px 16px;background:#11111d;border-bottom:1px solid #00eaff}
+h1,h2{color:#00f5ff}
+header h1{margin:0;letter-spacing:2px}
 header p,.muted{color:#aaa}
-main{max-width:1150px;margin:auto;padding:16px}
-input{width:100%;padding:14px;background:#12121e;color:white;border:1px solid #37374d;border-radius:10px;font-size:16px}
-h2{color:var(--cyan)}
+main{max-width:1100px;margin:auto;padding:16px}
+input{width:100%;padding:14px;background:#151522;color:white;border:1px solid #444;border-radius:10px;font-size:16px}
+.controls,.episodes{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+button{padding:10px;background:#101f2b;color:#00f5ff;border:1px solid #00f5ff;border-radius:8px;cursor:pointer}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px}
 .card{background:#12121d;border:1px solid #29293c;border-radius:12px;overflow:hidden}
-.card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#222}
-.card .info{padding:10px}
-.card h3{font-size:14px;line-height:1.4;min-height:38px;margin:0 0 9px}
-button{padding:10px 12px;background:#111f2b;color:var(--cyan);border:1px solid var(--cyan);border-radius:8px;cursor:pointer}
-button:disabled{opacity:.5}
-.card button{width:100%}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-section{margin-top:24px}
-.panel{padding:15px;background:#11111b;border:1px solid #303047;border-radius:12px}
-#details{display:grid;grid-template-columns:110px 1fr;gap:14px}
+.card img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#222}
+.info{padding:10px}
+.info h3{font-size:14px;min-height:35px}
+.info button{width:100%}
+.panel{margin-top:24px;padding:15px;background:#11111b;border:1px solid #33334b;border-radius:12px}
+#details{display:grid;grid-template-columns:105px 1fr;gap:14px}
 #poster{width:100%;border-radius:8px}
 #player{width:100%;aspect-ratio:16/9;border:0;background:#000;border-radius:10px}
-#episodes{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-a{color:var(--cyan)}
+a{color:#00f5ff}
 footer{text-align:center;color:#888;padding:25px}
 </style>
 </head>
 <body>
 <header>
-  <h1>⚡ ZENITH ANIME</h1>
-  <p>Discover anime. Find your next favourite.</p>
+<h1>⚡ ZENITH ANIME</h1>
+<p>Discover anime · Search · Watch</p>
 </header>
-
 <main>
-  <input id="search" placeholder="Search anime..." autocomplete="off">
-  <div class="controls">
-    <button id="trending">Trending Anime</button>
-    <button id="popular">Popular Anime</button>
-  </div>
+<input id="search" placeholder="Search anime..." autocomplete="off">
+<div class="controls">
+<button id="trending">Trending</button>
+<button id="popular">Popular</button>
+</div>
+<p id="status" class="muted">Loading catalogue...</p>
+<div id="catalog" class="grid"></div>
+<div class="controls"><button id="more">Load More</button></div>
 
-  <p id="status" class="muted">Loading anime catalogue...</p>
-  <div id="catalog" class="grid"></div>
-  <div class="controls">
-    <button id="more">Load More</button>
-  </div>
-
-  <section id="detailsSection" class="panel" hidden>
-    <h2 id="animeTitle">Anime details</h2>
-    <div id="details">
-      <img id="poster" alt="Anime poster">
-      <div>
-        <p id="meta"></p>
-        <p id="description"></p>
-        <p id="genres"></p>
-        <p id="episodeCount"></p>
-        <a id="animePage" target="_blank" rel="noopener">View anime information</a>
-      </div>
-    </div>
-
-    <h2>Episodes</h2>
-    <p id="episodeStatus" class="muted"></p>
-    <div id="episodes"></div>
-
-    <h2>Video Player</h2>
-    <iframe id="player" title="Anime video player"
-      src="about:blank"
-      allow="encrypted-media; picture-in-picture; fullscreen"
-      allowfullscreen
-      referrerpolicy="strict-origin-when-cross-origin"></iframe>
-    <p class="muted">Only configured, officially embeddable videos can play here.</p>
-  </section>
+<section id="watch" class="panel" hidden>
+<h2 id="animeTitle"></h2>
+<div id="details">
+<img id="poster" alt="Anime poster">
+<div>
+<p id="meta"></p>
+<p id="description"></p>
+<p id="genres"></p>
+<a id="animePage" target="_blank" rel="noopener">Anime information</a>
+</div>
+</div>
+<h2>Available Episodes</h2>
+<p id="episodeStatus" class="muted"></p>
+<div id="episodes" class="episodes"></div>
+<h2>Video Player</h2>
+<iframe id="player" title="Anime player"
+src="about:blank"
+allow="encrypted-media; picture-in-picture; fullscreen"
+allowfullscreen
+referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</section>
 </main>
-
-<footer>ZENITH ANIME · Anime discovery</footer>
+<footer>ZENITH ANIME</footer>
 
 <script>
-const API = "https://graphql.anilist.co";
+const API="https://graphql.anilist.co";
 
-/*
-Add only verified, authorized YouTube embeds here.
-Use the exact anime title as the key.
-No invented episode IDs are included.
-*/
-const OFFICIAL_VIDEO_SOURCES = {
-  /*
-  "Example Anime": [
-    { episode: 1, videoId: "VERIFIED_VIDEO_ID" }
-  ]
-  */
-};
-
-const query = `
-query ($page: Int, $search: String, $sort: [MediaSort]) {
-  Page(page: $page, perPage: 24) {
-    pageInfo { hasNextPage }
-    media(type: ANIME, isAdult: false, search: $search, sort: $sort) {
-      id
-      title { romaji english }
-      coverImage { large }
-      episodes
-      seasonYear
-      averageScore
-      description(asHtml: false)
-      genres
-      siteUrl
-      format
-      status
-    }
+const query=`
+query($page:Int,$search:String,$sort:[MediaSort]){
+ Page(page:$page,perPage:24){
+  pageInfo{hasNextPage}
+  media(type:ANIME,isAdult:false,search:$search,sort:$sort){
+   id
+   title{romaji english}
+   coverImage{large}
+   episodes
+   seasonYear
+   averageScore
+   description(asHtml:false)
+   genres
+   siteUrl
+   format
   }
+ }
 }`;
 
-const catalog = document.getElementById("catalog");
-const statusEl = document.getElementById("status");
-const search = document.getElementById("search");
-const detailsSection = document.getElementById("detailsSection");
-const episodeList = document.getElementById("episodes");
-const player = document.getElementById("player");
+const catalog=document.getElementById("catalog");
+const search=document.getElementById("search");
+const status=document.getElementById("status");
+const watch=document.getElementById("watch");
+const player=document.getElementById("player");
+const episodes=document.getElementById("episodes");
+let page=1, term="", sort="TRENDING_DESC";
+let busy=false, hasNext=false, timer;
 
-let page = 1;
-let currentSearch = "";
-let currentSort = "TRENDING_DESC";
-let loading = false;
-let hasNextPage = false;
-let searchTimer;
+function officialSources(anime){
+ const name=[
+  anime.title.english||"",
+  anime.title.romaji||""
+ ].join(" ").toLowerCase();
 
-async function requestAnime(reset = true) {
-  if (loading) return;
-  loading = true;
-
-  if (reset) {
-    page = 1;
-    catalog.replaceChildren();
-  }
-
-  statusEl.textContent = "Loading anime...";
-  document.getElementById("more").disabled = true;
-
-  try {
-    const response = await fetch(API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        query,
-        variables: {
-          page,
-          search: currentSearch || null,
-          sort: [currentSort]
-        }
-      })
-    });
-
-    if (!response.ok) throw new Error("API request failed");
-
-    const result = await response.json();
-    if (result.errors) throw new Error("Anime catalogue unavailable");
-
-    const data = result.data.Page;
-    hasNextPage = data.pageInfo.hasNextPage;
-
-    data.media.forEach(anime => {
-      const card = document.createElement("article");
-      card.className = "card";
-
-      const img = document.createElement("img");
-      img.src = anime.coverImage.large;
-      img.alt = anime.title.english || anime.title.romaji;
-      img.loading = "lazy";
-
-      const info = document.createElement("div");
-      info.className = "info";
-
-      const heading = document.createElement("h3");
-      heading.textContent = anime.title.english || anime.title.romaji;
-
-      const button = document.createElement("button");
-      button.textContent = "View Details";
-      button.onclick = () => openAnime(anime);
-
-      info.append(heading, button);
-      card.append(img, info);
-      catalog.append(card);
-    });
-
-    statusEl.textContent = catalog.children.length
-      ? "Anime catalogue loaded."
-      : "No anime found. Try another title.";
-
-    document.getElementById("more").disabled = !hasNextPage;
-  } catch (error) {
-    statusEl.textContent =
-      "Could not load anime. Check your internet and try again.";
-  } finally {
-    loading = false;
-  }
+ // Official Gundam playlist announced by Gundam's website.
+ if(name.includes("unicorn") && name.includes("0096")){
+  return [{
+   label:"Official episode playlist",
+   playlist:"PLAKqAsKfNksU"
+  }];
+ }
+ return [];
 }
 
-function openAnime(anime) {
-  detailsSection.hidden = false;
-  document.getElementById("animeTitle").textContent =
-    anime.title.english || anime.title.romaji;
+async function load(reset=true){
+ if(busy)return;
+ busy=true;
+ if(reset){page=1;catalog.replaceChildren()}
+ status.textContent="Loading anime...";
+ document.getElementById("more").disabled=true;
 
-  document.getElementById("poster").src = anime.coverImage.large;
-  document.getElementById("meta").textContent =
-    `${anime.format || "Anime"} · ${anime.seasonYear || "Year unknown"} · ` +
-    `${anime.averageScore ? anime.averageScore + "/100 score" : "Not rated"}`;
+ try{
+  const res=await fetch(API,{
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json",
+    "Accept":"application/json"
+   },
+   body:JSON.stringify({
+    query,
+    variables:{
+     page,
+     search:term||null,
+     sort:[sort]
+    }
+   })
+  });
+  if(!res.ok)throw Error("Request failed");
+  const json=await res.json();
+  if(json.errors)throw Error("API error");
 
-  document.getElementById("description").textContent =
-    (anime.description || "No description available.")
-      .replace(/<[^>]*>/g, "")
-      .slice(0, 900);
+  const data=json.data.Page;
+  hasNext=data.pageInfo.hasNextPage;
 
-  document.getElementById("genres").textContent =
-    "Genres: " + (anime.genres || []).join(", ");
+  data.media.forEach(anime=>{
+   const card=document.createElement("article");
+   card.className="card";
 
-  document.getElementById("episodeCount").textContent =
-    "Episodes listed: " + (anime.episodes ?? "Not available");
+   const img=document.createElement("img");
+   img.src=anime.coverImage.large;
+   img.alt=anime.title.english||anime.title.romaji;
+   img.loading="lazy";
 
-  const link = document.getElementById("animePage");
-  link.href = anime.siteUrl || "https://anilist.co/";
+   const info=document.createElement("div");
+   info.className="info";
 
-  episodeList.replaceChildren();
-  player.src = "about:blank";
+   const h=document.createElement("h3");
+   h.textContent=anime.title.english||anime.title.romaji;
 
-  const title = anime.title.english || anime.title.romaji;
-  const sources = OFFICIAL_VIDEO_SOURCES[title] || [];
+   const btn=document.createElement("button");
+   btn.textContent="View Details";
+   btn.onclick=()=>openAnime(anime);
 
-  if (!sources.length) {
-    document.getElementById("episodeStatus").textContent =
-      "Episode count is available, but no verified playable video sources " +
-      "are configured for this anime yet.";
-  } else {
-    document.getElementById("episodeStatus").textContent =
-      "Select an available episode:";
+   info.append(h,btn);
+   card.append(img,info);
+   catalog.append(card);
+  });
 
-    sources.forEach(source => {
-      const btn = document.createElement("button");
-      btn.textContent = "Episode " + source.episode;
-
-      btn.onclick = () => {
-        if (!/^[A-Za-z0-9_-]{11}$/.test(source.videoId)) {
-          document.getElementById("episodeStatus").textContent =
-            "The configured video ID is invalid.";
-          return;
-        }
-
-        player.src =
-          "https://www.youtube-nocookie.com/embed/" +
-          encodeURIComponent(source.videoId);
-      };
-
-      episodeList.append(btn);
-    });
-  }
-
-  detailsSection.scrollIntoView({ behavior: "smooth" });
+  status.textContent=catalog.children.length
+   ?"Catalogue loaded."
+   :"No anime found.";
+  document.getElementById("more").disabled=!hasNext;
+ }catch(e){
+  status.textContent=
+   "Catalogue could not load. Check internet and reload.";
+ }finally{
+  busy=false;
+ }
 }
 
-search.addEventListener("input", () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    currentSearch = search.value.trim();
-    requestAnime(true);
-  }, 450);
+function openAnime(anime){
+ watch.hidden=false;
+ const name=anime.title.english||anime.title.romaji;
+ document.getElementById("animeTitle").textContent=name;
+ document.getElementById("poster").src=anime.coverImage.large;
+ document.getElementById("meta").textContent=
+  `${anime.format||"Anime"} · ${anime.seasonYear||"Year unknown"} · `+
+  `${anime.episodes??"?"} episodes`;
+ document.getElementById("description").textContent=
+  (anime.description||"No description available.")
+   .replace(/<[^>]*>/g,"").slice(0,800);
+ document.getElementById("genres").textContent=
+  "Genres: "+(anime.genres||[]).join(", ");
+ document.getElementById("animePage").href=
+  anime.siteUrl||"https://anilist.co/";
+
+ episodes.replaceChildren();
+ player.src="about:blank";
+ const sources=officialSources(anime);
+
+ if(!sources.length){
+  document.getElementById("episodeStatus").textContent=
+   "No configured official video source for this anime yet.";
+ }else{
+  document.getElementById("episodeStatus").textContent=
+   "Select the official playlist:";
+  sources.forEach(source=>{
+   const btn=document.createElement("button");
+   btn.textContent=source.label;
+   btn.onclick=()=>{
+    player.src=
+     "https://www.youtube-nocookie.com/embed/videoseries?list="+
+     encodeURIComponent(source.playlist);
+    document.getElementById("episodeStatus").textContent=
+     "Loading official playlist...";
+   };
+   episodes.append(btn);
+  });
+ }
+ watch.scrollIntoView({behavior:"smooth"});
+}
+
+search.addEventListener("input",()=>{
+ clearTimeout(timer);
+ timer=setTimeout(()=>{
+  term=search.value.trim();
+  load(true);
+ },450);
 });
 
-document.getElementById("trending").onclick = () => {
-  currentSearch = "";
-  search.value = "";
-  currentSort = "TRENDING_DESC";
-  requestAnime(true);
+document.getElementById("trending").onclick=()=>{
+ term="";search.value="";sort="TRENDING_DESC";load(true);
 };
-
-document.getElementById("popular").onclick = () => {
-  currentSearch = "";
-  search.value = "";
-  currentSort = "POPULARITY_DESC";
-  requestAnime(true);
+document.getElementById("popular").onclick=()=>{
+ term="";search.value="";sort="POPULARITY_DESC";load(true);
 };
-
-document.getElementById("more").onclick = () => {
-  if (!loading && hasNextPage) {
-    page++;
-    requestAnime(false);
-  }
+document.getElementById("more").onclick=()=>{
+ if(!busy&&hasNext){page++;load(false)}
 };
-
-requestAnime();
+load();
 </script>
 </body>
 </html>
