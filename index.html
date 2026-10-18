@@ -2,139 +2,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zenith Anime</title>
-<style>
-:root{color-scheme:dark;--neon:#00f5ff;--pink:#ff00a8}
-*{box-sizing:border-box}
-body{margin:0;background:#07070b;color:#fff;font-family:Arial,sans-serif}
-header{padding:22px 16px;background:#101018;border-bottom:1px solid #242433}
-h1{margin:0;color:var(--neon);letter-spacing:2px}
-header p{color:#aaa;margin-bottom:0}
-main{max-width:1100px;margin:auto;padding:18px}
-input{width:100%;padding:14px;border:1px solid #33334a;border-radius:10px;background:#11111a;color:white;font-size:16px}
-h2{color:var(--neon)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.card{background:#11111a;border:1px solid #29293a;border-radius:12px;padding:15px;min-height:115px}
-.card h3{font-size:16px;margin:0 0 12px}
-button{background:#101c25;color:var(--neon);border:1px solid var(--neon);border-radius:8px;padding:10px;cursor:pointer}
-button:hover{background:#12323a}
-#watch{margin-top:25px;padding:15px;background:#101018;border:1px solid #303044;border-radius:12px}
-#player{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
-#status{color:#bbb;line-height:1.6}
-.episodes{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
-small{color:#aaa}
-footer{text-align:center;color:#888;padding:24px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenith Anime</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #09090f;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 18px;
+      background: #151520;
+      border-bottom: 1px solid #343044;
+    }
+
+    .logo {
+      color: #a970ff;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .player {
+      width: 100%;
+      background: black;
+      border: 1px solid #6e36c8;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: black;
+    }
+
+    h2 { margin-top: 22px; }
+
+    .episode {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      text-align: left;
+      color: white;
+      background: #191923;
+      border: 1px solid #343044;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .episode:hover {
+      border-color: #a970ff;
+    }
+
+    .note {
+      color: #b8b8c8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #status {
+      color: #c6a4ff;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <h1>⚡ ZENITH ANIME</h1>
-  <p>Your anime zone · Search · Watch</p>
-</header>
+  <header>
+    <div class="logo">⚡ ZENITH ANIME</div>
+  </header>
 
-<main>
-  <input id="search" placeholder="Search anime..." aria-label="Search anime">
-  <h2>Anime Library</h2>
-  <div id="catalog" class="grid"></div>
+  <main>
+    <h2 id="title">Anime Video Player</h2>
 
-  <section id="watch">
-    <h2 id="title">Choose an anime</h2>
-    <p id="status">Select an anime to see its available episodes.</p>
-    <div id="episodes" class="episodes"></div>
-    <iframe id="player" title="Anime video player"
-      allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"
-      allowfullscreen
-      referrerpolicy="strict-origin-when-cross-origin"
-      src="about:blank"></iframe>
-    <p><small>Only videos with an authorized, working embed source can play here.</small></p>
-  </section>
-</main>
-<footer>ZENITH ANIME · Made for anime fans</footer>
+    <div class="player">
+      <video
+        id="video"
+        controls
+        playsinline
+        preload="metadata"
+        poster=""
+      >
+        Your browser does not support video playback.
+      </video>
+    </div>
 
-<script>
-const animeTitles = [
-"Naruto","One Piece","Demon Slayer","Jujutsu Kaisen",
-"Solo Leveling","Attack on Titan","Death Note",
-"My Hero Academia","Blue Lock","Haikyuu!!","Dragon Ball Z",
-"Hunter x Hunter","Fullmetal Alchemist: Brotherhood",
-"Spy x Family","Chainsaw Man","Tokyo Revengers",
-"Black Clover","One Punch Man","Mob Psycho 100",
-"Vinland Saga","Bleach","Frieren","Dr. Stone",
-"The Apothecary Diaries","Your Name","Suzume",
-"Kuroko's Basketball","The Promised Neverland",
-"Re:Zero","Code Geass"
-];
+    <p id="status">Select an episode to start.</p>
 
-const catalog = document.getElementById("catalog");
-const search = document.getElementById("search");
-const player = document.getElementById("player");
-const title = document.getElementById("title");
-const status = document.getElementById("status");
-const episodes = document.getElementById("episodes");
+    <h2>Episodes</h2>
 
-/*
-Add only video IDs from sources you are authorized to embed.
-Example structure:
-const officialEpisodes = {
-  "Example Anime": [
-    { name: "Episode 1", videoId: "VALID_EMBEDDABLE_VIDEO_ID" }
-  ]
-};
-No episode IDs are pre-filled because unverified IDs may not work.
-*/
-const officialEpisodes = {};
+    <button class="episode" onclick="playEpisode(0)">
+      ▶ Test Video — Episode 1
+    </button>
 
-function renderCatalog(query = "") {
-  catalog.replaceChildren();
-  animeTitles
-    .filter(name => name.toLowerCase().includes(query.toLowerCase()))
-    .forEach(name => {
-      const card = document.createElement("article");
-      card.className = "card";
-      const heading = document.createElement("h3");
-      heading.textContent = name;
-      const button = document.createElement("button");
-      button.textContent = "View Episodes";
-      button.onclick = () => openAnime(name);
-      card.append(heading, button);
-      catalog.append(card);
-    });
-}
+    <button class="episode" onclick="playEpisode(1)">
+      ▶ My Licensed Video — Episode 2
+    </button>
 
-function openAnime(name) {
-  title.textContent = name;
-  episodes.replaceChildren();
-  player.src = "about:blank";
+    <p class="note">
+      Episode 1 is a sample test video, not an anime episode.
+      Replace the second URL in the code with a video URL you
+      own or are authorized to stream.
+    </p>
+  </main>
 
-  const list = officialEpisodes[name] || [];
-  if (!list.length) {
-    status.textContent =
-      "No verified, officially embeddable episodes are configured for this anime yet.";
-    return;
-  }
+  <script>
+    const episodes = [
+      {
+        title: "Player Test",
+        url: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+      },
+      {
+        title: "My Licensed Video",
+        url: "YOUR_AUTHORIZED_MP4_URL_HERE"
+      }
+    ];
 
-  status.textContent = "Choose an available episode:";
-  list.forEach(ep => {
-    const button = document.createElement("button");
-    button.textContent = ep.name;
-    button.onclick = () => {
-      if (!/^[a-zA-Z0-9_-]{11}$/.test(ep.videoId)) {
-        status.textContent = "This video ID is invalid.";
+    const video = document.getElementById("video");
+    const title = document.getElementById("title");
+    const status = document.getElementById("status");
+
+    function playEpisode(index) {
+      const episode = episodes[index];
+
+      if (!episode.url ||
+          episode.url.includes("YOUR_AUTHORIZED")) {
+        status.textContent =
+          "Add your authorized video URL in the code first.";
         return;
       }
-      player.src =
-        "https://www.youtube-nocookie.com/embed/" +
-        encodeURIComponent(ep.videoId);
-      status.textContent = "Loading " + ep.name + "...";
-    };
-    episodes.append(button);
-  });
-}
 
-search.addEventListener("input", () => renderCatalog(search.value));
-renderCatalog();
-</script>
+      video.pause();
+      video.src = episode.url;
+      video.load();
+
+      title.textContent = episode.title;
+      status.textContent = "Video ready. Press Play.";
+
+      video.play().then(() => {
+        status.textContent = "Now playing: " + episode.title;
+      }).catch(() => {
+        status.textContent =
+          "Press Play to start, or check whether the video URL works.";
+      });
+    }
+
+    video.addEventListener("error", () => {
+      status.textContent =
+        "Video could not load. Check the URL, format and hosting permissions.";
+    });
+
+    playEpisode(0);
+  </script>
 </body>
 </html>
