@@ -2,208 +2,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zenith Anime</title>
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;background:#090b12;color:#fff;
-  font-family:Arial,sans-serif
-}
-header{
-  padding:18px;background:#111522;
-  border-bottom:1px solid #292d42;
-  position:sticky;top:0
-}
-.logo{font-size:25px;font-weight:bold;color:#21d4fd}
-.search{display:flex;gap:8px;margin-top:15px}
-input{
-  flex:1;min-width:0;padding:12px;
-  background:#090b12;color:white;
-  border:1px solid #393e55;border-radius:8px
-}
-button{
-  padding:11px 14px;border:0;border-radius:8px;
-  background:#7655ff;color:white;cursor:pointer
-}
-main{padding:18px;max-width:1100px;margin:auto}
-.hero{
-  padding:25px;border-radius:15px;
-  background:linear-gradient(120deg,#251d50,#102b40);
-  margin-bottom:25px
-}
-.hero h1{font-size:32px;margin:0 0 10px}
-.hero p{color:#c6c9da}
-h2{font-size:21px}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:13px
-}
-.card{
-  background:#141827;border:1px solid #292d42;
-  border-radius:12px;overflow:hidden;cursor:pointer
-}
-.poster{
-  height:190px;display:flex;align-items:end;
-  padding:12px;font-weight:bold;font-size:20px;
-  background:linear-gradient(145deg,#493c80,#111827)
-}
-.card:nth-child(2n) .poster{
-  background:linear-gradient(145deg,#126176,#15172b)
-}
-.info{padding:12px}
-.info p{font-size:12px;color:#adb5cc}
-#playerSection{
-  display:none;margin-top:25px;padding:15px;
-  background:#141827;border-radius:12px
-}
-video{width:100%;margin-top:12px;background:#000}
-.episodes{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.note{color:#b8bfd3;font-size:13px;line-height:1.5}
-@media(min-width:650px){
- .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
- .poster{height:240px}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartoon AI Studio</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #080812;
+      color: #f5f3ff;
+    }
+    header {
+      padding: 22px 16px;
+      text-align: center;
+      border-bottom: 1px solid #292344;
+      background: #100d20;
+    }
+    header h1 { margin: 0; color: #c6a5ff; }
+    header p { color: #b9b3cc; font-size: 14px; }
+    main { width: min(700px, 92%); margin: 28px auto; }
+    .panel {
+      background: #121222;
+      border: 1px solid #393052;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 8px;
+      font-weight: bold;
+    }
+    textarea, select, input {
+      width: 100%;
+      padding: 13px;
+      background: #090916;
+      color: white;
+      border: 1px solid #494064;
+      border-radius: 9px;
+      font-size: 15px;
+    }
+    textarea { min-height: 125px; resize: vertical; }
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 10px;
+      background: #9b5cff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:active { transform: scale(.99); }
+    .note {
+      color: #c5bdd9;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    #status {
+      padding: 12px;
+      margin-top: 14px;
+      border-radius: 8px;
+      background: #201b32;
+      line-height: 1.5;
+    }
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      margin: 4px;
+      border: 1px solid #51406f;
+      border-radius: 20px;
+      color: #d6c0ff;
+      font-size: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 22px;
+      color: #8f89a4;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">ZENITH ANIME ⚡</div>
-  <div class="search">
-    <input id="search" placeholder="Search anime...">
-    <button onclick="filterAnime()">Search</button>
-  </div>
-</header>
+  <header>
+    <h1>🎬 Cartoon AI Studio</h1>
+    <p>Turn your cartoon idea into a movie concept</p>
+    <span class="tag">Cartoon</span>
+    <span class="tag">720p target</span>
+    <span class="tag">5-minute target</span>
+  </header>
 
-<main>
-  <section class="hero">
-    <h1>Explore Anime World</h1>
-    <p>Discover your next favourite anime.</p>
-    <button onclick="document.getElementById('catalog').scrollIntoView()">Explore Now</button>
-  </section>
+  <main>
+    <section class="panel">
+      <h2>✨ Create your cartoon</h2>
+      <p class="note">
+        Describe your story, characters, setting and dialogue.
+        The generation service must be connected before a real video
+        can be rendered.
+      </p>
 
-  <h2 id="catalog">Popular Anime</h2>
-  <div class="grid" id="animeGrid"></div>
+      <label for="prompt">Your cartoon story</label>
+      <textarea id="prompt"
+        placeholder="Example: A funny boy and his friends go on an adventure to save their town..."></textarea>
 
-  <section id="playerSection">
-    <h2 id="animeTitle">Anime</h2>
-    <button onclick="closePlayer()">Close ✕</button>
-    <p class="note" id="episodeInfo">Select an episode.</p>
-    <video id="video" controls playsinline></video>
-    <div class="episodes" id="episodes"></div>
-    <p class="note">
-      To play a video, add a direct video URL that you own
-      or are authorised to use. Episode buttons are demo
-      controls until episode sources are configured.
-    </p>
-    <input id="videoUrl" placeholder="Paste authorised video URL">
-    <button onclick="loadVideo()">Load Video</button>
-  </section>
-</main>
+      <label for="duration">Final video duration</label>
+      <select id="duration">
+        <option value="300">5 minutes (minimum)</option>
+        <option value="360">6 minutes</option>
+        <option value="600">10 minutes</option>
+      </select>
 
-<script>
-const animeData=[
- {name:"Demon Slayer",year:2019,count:26},
- {name:"Solo Leveling",year:2024,count:12},
- {name:"Blue Lock",year:2022,count:24},
- {name:"Jujutsu Kaisen",year:2020,count:24},
- {name:"Naruto",year:2002,count:220},
- {name:"Attack on Titan",year:2013,count:25},
- {name:"One Punch Man",year:2015,count:12},
- {name:"Spy x Family",year:2022,count:25}
-];
+      <label for="quality">Target resolution</label>
+      <select id="quality">
+        <option value="1280x720">720p HD (1280 × 720)</option>
+      </select>
 
-const grid=document.getElementById("animeGrid");
-let currentAnime=null;
+      <label for="style">Cartoon style</label>
+      <select id="style">
+        <option>3D animated cartoon</option>
+        <option>2D cartoon</option>
+        <option>Anime-inspired cartoon</option>
+        <option>Storybook animation</option>
+      </select>
 
-function render(list){
- grid.innerHTML="";
- list.forEach(anime=>{
-  const card=document.createElement("div");
-  card.className="card";
+      <button id="generate">Check generation setup</button>
+      <div id="status" role="status" aria-live="polite">
+        No video generated yet. An actual video API is required.
+      </div>
+    </section>
 
-  const poster=document.createElement("div");
-  poster.className="poster";
-  poster.textContent=anime.name;
+    <section class="panel">
+      <h3>📽️ How your movie will be made</h3>
+      <p class="note">
+        1. Prepare the story and scenes.<br>
+        2. Generate real clips using a supported AI provider.<br>
+        3. Join the clips into a final video of at least 300 seconds.<br>
+        4. Export at 720p if the provider and rendering tools support it.
+      </p>
+      <p class="note">
+        This page does not yet generate or download video. No paid API
+        or generation service is connected.
+      </p>
+    </section>
+  </main>
 
-  const info=document.createElement("div");
-  info.className="info";
+  <footer>Cartoon AI Studio · Built for creative storytelling</footer>
 
-  const title=document.createElement("strong");
-  title.textContent=anime.name;
+  <script>
+    const button = document.getElementById("generate");
 
-  const meta=document.createElement("p");
-  meta.textContent=anime.year+" • "+anime.count+" episodes";
+    button.addEventListener("click", function () {
+      const prompt = document.getElementById("prompt").value.trim();
+      const duration = Number(document.getElementById("duration").value);
+      const quality = document.getElementById("quality").value;
+      const style = document.getElementById("style").value;
+      const status = document.getElementById("status");
 
-  info.append(title,meta);
-  card.append(poster,info);
-  card.onclick=()=>openAnime(anime);
-  grid.appendChild(card);
- });
-}
+      if (!prompt) {
+        status.textContent = "Please enter your cartoon story first.";
+        return;
+      }
 
-function filterAnime(){
- const query=document.getElementById("search").value
-  .trim().toLowerCase();
- render(animeData.filter(a=>
-  a.name.toLowerCase().includes(query)
- ));
-}
-
-function openAnime(anime){
- currentAnime=anime;
- document.getElementById("playerSection").style.display="block";
- document.getElementById("animeTitle").textContent=anime.name;
- document.getElementById("episodeInfo").textContent=
-  "Select an episode of "+anime.name;
- document.getElementById("video").pause();
- document.getElementById("video").removeAttribute("src");
- document.getElementById("video").load();
- document.getElementById("videoUrl").value="";
-
- const list=document.getElementById("episodes");
- list.innerHTML="";
- for(let i=1;i<=Math.min(anime.count,12);i++){
-  const btn=document.createElement("button");
-  btn.textContent="Episode "+i;
-  btn.onclick=()=>{
-   document.getElementById("episodeInfo").textContent=
-    anime.name+" — Episode "+i+
-    ". Add the authorised video URL to play it.";
-  };
-  list.appendChild(btn);
- }
- document.getElementById("playerSection")
-  .scrollIntoView({behavior:"smooth"});
-}
-
-function loadVideo(){
- const input=document.getElementById("videoUrl").value.trim();
- const note=document.getElementById("episodeInfo");
- try{
-  const url=new URL(input);
-  if(!["https:","http:"].includes(url.protocol))throw Error();
-  const video=document.getElementById("video");
-  video.src=url.href;
-  video.load();
-  note.textContent="Video source loaded. Playback depends on URL compatibility and access permissions.";
- }catch(e){
-  note.textContent="Enter a valid HTTP or HTTPS video URL.";
- }
-}
-
-function closePlayer(){
- document.getElementById("video").pause();
- document.getElementById("playerSection").style.display="none";
-}
-
-document.getElementById("search").addEventListener("keydown",e=>{
- if(e.key==="Enter")filterAnime();
-});
-
-render(animeData);
-</script>
+      status.textContent =
+        "Your request is ready, but no real AI video provider is connected. " +
+        "Requested duration: " + duration + " seconds; target resolution: " +
+        quality + "; style: " + style + ". No video has been generated.";
+    });
+  </script>
 </body>
 </html>
